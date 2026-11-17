@@ -53,19 +53,27 @@ view.addEventListener("click", function () {
   showCombos(document.body.className !== "combo-view");
 });
 syncView(document.querySelector("section.on"));
-function swapKey(key, pos) {
+function cycleLength(section, pos) {
+  var match = (" " + section.getAttribute("data-cycle") + " ").match(new RegExp(" " + pos + ":(\\d+) "));
+  return match ? parseInt(match[1], 10) : 1;
+}
+function cycleKey(key, pos) {
   var section = key;
   while (section.nodeName.toUpperCase() !== "SECTION") section = section.parentNode;
-  var other = section.querySelector(".alt ." + pos);
-  if (!other) return;
-  var keyParent = key.parentNode, otherParent = other.parentNode, next = other.nextSibling;
-  keyParent.replaceChild(other, key);
-  otherParent.insertBefore(key, next);
+  var length = cycleLength(section, pos);
+  if (length < 2) return;
+  var nodes = [key], marks = [], i;
+  for (i = 1; i < length; i++) nodes.push(section.querySelector('.alt[data-n="' + i + '"] .keypos-' + pos));
+  for (i = 0; i < length; i++) {
+    marks.push(document.createComment(""));
+    nodes[i].parentNode.insertBefore(marks[i], nodes[i]);
+  }
+  for (i = 0; i < length; i++) marks[i].parentNode.replaceChild(nodes[(i + 1) % length], marks[i]);
 }
 document.querySelector("main").addEventListener("click", function (e) {
   for (var node = e.target; node && node.getAttribute; node = node.parentNode) {
-    var pos = (node.getAttribute("class") || "").match(/keypos-\d+/);
-    if (pos) return swapKey(node, pos[0]);
+    var pos = (node.getAttribute("class") || "").match(/keypos-(\d+)/);
+    if (pos) return cycleKey(node, pos[1]);
   }
 });
 more.addEventListener("click", function () {

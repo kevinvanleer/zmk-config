@@ -79,12 +79,26 @@ FUNCTION_LABELS = {
     "⌘←": "Home",
     "⌘→": "End",
     "⌘H": "Hide app",
-    "⌘L": "Address bar",
-    "⌘K": "Search bar",
     "⌘⌃Q": "Lock screen",
     "⌃Tab": "Next tab",
     "⌃⇧Tab": "Prev tab",
 }
+
+APP_FUNCTIONS = {
+    "⌘L": ["Address bar", "Go to line"],
+    "⌘K": ["Search bar", "Insert link", "Jump to", "Clear"],
+}
+
+
+def label_cycle(key):
+    tap = str(key.get("t", "")) if isinstance(key, dict) else str(key)
+    if isinstance(key, dict) and "h" in key:
+        return []
+    if tap in FUNCTION_LABELS:
+        return [FUNCTION_LABELS[tap], tap]
+    if tap in APP_FUNCTIONS:
+        return [tap, *APP_FUNCTIONS[tap]]
+    return []
 
 SYMBOL_GROUPS = {
     "brackets": "()[]{}<>",
@@ -95,14 +109,13 @@ SYMBOL_GROUPS = {
 }
 
 
-def symbolize(key, keep_shifted, as_function=True):
+def symbolize(key, keep_shifted, variant=0):
     if not isinstance(key, dict):
         key = {"t": key}
     tap, shifted = str(key.get("t", "")), key.get("s")
-    if tap in FUNCTION_LABELS and "h" not in key:
-        if as_function:
-            return {"t": FUNCTION_LABELS[tap], "type": "shortcut"}
-        return {"t": tap, "type": "shortcut"}
+    cycle = label_cycle(key)
+    if cycle:
+        return {"t": cycle[variant % len(cycle)], "type": "shortcut"}
     if tap.startswith("⇧") and isinstance(shifted, str) and shifted.startswith("⇧"):
         key["t"], tap = shifted[1:], shifted[1:]
         del key["s"]
@@ -198,22 +211,24 @@ def draw(parsed, layers, name):
     return annotate(svg[svg.index("<svg"):])
 
 
-def render(parsed, keystrokes):
+def render(parsed, alternates, cycles):
     layers = parsed["layers"]
     combos = parsed.pop("combos", [])
     reference = next(iter(layers.values()))
     pinned, extra, sections = [], [], []
     for name in layers:
         svg = draw(parsed, layers, name)
-        if keystrokes[name] != layers[name]:
-            svg += f'<div class="alt">{draw(parsed, keystrokes, name)}</div>'
+        longest = max([1, *cycles[name].values()])
+        for n, alternate in enumerate(alternates[: longest - 1], 1):
+            svg += f'<div class="alt" data-n="{n}">{draw(parsed, alternate, name)}</div>'
+        cycle = " ".join(f"{pos}:{m}" for pos, m in cycles[name].items())
         lines = combo_lines(combos, name, reference)
         items = "".join(f"<li>{html.escape(line)}</li>" for line in lines)
         on = ' class="on"' if not sections else ""
         tab = f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>'
         (pinned if name in PINNED_LAYERS else extra).append(tab)
         sections.append(
-            f'<section id="{slug(name)}" data-combos="{len(lines)}"{on}>{svg}'
+            f'<section id="{slug(name)}" data-combos="{len(lines)}" data-cycle="{cycle}"{on}>{svg}'
             + f'<ul class="combos">{items}</ul>'
             + "</section>"
         )
@@ -236,15 +251,19 @@ def main(out_path):
     visible = {
         n: [clean(k, names) for k in keys] for n, keys in parsed["layers"].items() if n in names
     }
-    parsed["layers"] = {
-        n: [symbolize(k, n == base) for k in keys] for n, keys in visible.items()
+    cycles = {
+        n: {pos: len(label_cycle(k)) for pos, k in enumerate(keys) if label_cycle(k)}
+        for n, keys in visible.items()
     }
-    keystrokes = {
-        n: [symbolize(k, n == base, as_function=False) for k in keys] for n, keys in visible.items()
-    }
+    most = max([1, *(m for c in cycles.values() for m in c.values())])
+    variants = [
+        {n: [symbolize(k, n == base, i) for k in keys] for n, keys in visible.items()}
+        for i in range(most)
+    ]
+    parsed["layers"] = variants[0]
     for combo in parsed.get("combos", []):
         combo["k"] = clean(combo["k"])
-    page = render(parsed, keystrokes)
+    page = render(parsed, variants[1:], cycles)
     unmapped = sorted(set(re.findall(r">(&amp;[a-z][^<]*)<", page)))
     if unmapped:
         sys.exit(f"unmapped bindings: {unmapped}")
