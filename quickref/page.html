@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Glove80 Layers</title>
+<style>
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { position: fixed; top: 0; right: 0; bottom: 0; left: 0; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; background: #f2f2f2; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color: #222; }
+nav { -webkit-flex: none; flex: none; background: #fff; border-bottom: 1px solid #ccc; padding: 4px 6px; }
+nav a { display: inline-block; margin: 3px; padding: 8px 11px; border-radius: 6px; background: #eee; color: #222; text-decoration: none; font-size: 15px; }
+nav a.on { background: #335; color: #fff; }
+main { -webkit-flex: 1; flex: 1; min-height: 0; }
+section { display: none; height: 100%; box-sizing: border-box; padding: 4px 12px 8px; -webkit-flex-direction: column; flex-direction: column; }
+section.on { display: -webkit-flex; display: flex; }
+section svg { -webkit-flex: 1; flex: 1; min-height: 0; width: 100%; height: 100%; }
+.combos { display: none; height: 100%; box-sizing: border-box; padding: 8px 24px 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; cursor: auto; }
+.combos h2 { margin: 12px 0 4px; font-size: 15px; font-weight: 600; color: #666; }
+.combos ul { margin: 0; padding-left: 24px; -webkit-columns: 2 320px; columns: 2 320px; font-size: 19px; line-height: 1.9; }
+body.combo-view section.on { display: none; }
+.variant { display: none; }
+main { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+body.combo-view .combos { display: block; }
+nav button { margin: 3px; padding: 8px 14px; border: 0; border-radius: 6px; font-size: 15px; font-family: inherit; }
+#view { float: right; background: #e07050; color: #fff; }
+#more { background: #fff; color: #335; border: 1px solid #335; }
+#extra a { display: none; }
+#extra a.on, nav.expanded #extra a { display: inline-block; }
+nav.expanded #extra { display: block; border-top: 1px solid #ddd; margin-top: 4px; padding-top: 4px; }
+</style>
+</head>
+<body>
+<nav><button type="button" id="view">Combos</button>{{pinned}}<button type="button" id="more">More ▾</button><span id="extra">{{extra}}</span></nav>
+<main>{{sections}}</main>
+<script>
+var nav = document.querySelector("nav");
+var more = document.getElementById("more");
+var view = document.getElementById("view");
+function expand(open) {
+  nav.className = open ? "expanded" : "";
+  more.textContent = open ? "Less ▴" : "More ▾";
+}
+function showCombos(on) {
+  document.body.className = on ? "combo-view" : "";
+  view.textContent = on ? "Layout" : "Combos";
+}
+view.addEventListener("click", function () {
+  showCombos(document.body.className !== "combo-view");
+});
+function cycleLength(section, pos) {
+  var match = (" " + section.getAttribute("data-cycle") + " ").match(new RegExp(" " + pos + ":(\\d+) "));
+  return match ? parseInt(match[1], 10) : 1;
+}
+function cycleKey(key, pos) {
+  var section = key;
+  while (section.nodeName.toUpperCase() !== "SECTION") section = section.parentNode;
+  var length = cycleLength(section, pos);
+  if (length < 2) return;
+  var nodes = [key], marks = [], i;
+  for (i = 1; i < length; i++) nodes.push(section.querySelector('.variant[data-n="' + i + '"] .keypos-' + pos));
+  for (i = 0; i < length; i++) {
+    marks.push(document.createComment(""));
+    nodes[i].parentNode.insertBefore(marks[i], nodes[i]);
+  }
+  for (i = 0; i < length; i++) marks[i].parentNode.replaceChild(nodes[(i + 1) % length], marks[i]);
+}
+document.querySelector("main").addEventListener("click", function (e) {
+  for (var node = e.target; node && node.getAttribute; node = node.parentNode) {
+    var pos = (node.getAttribute("class") || "").match(/keypos-(\d+)/);
+    if (pos) return cycleKey(node, pos[1]);
+  }
+});
+more.addEventListener("click", function () {
+  expand(nav.className !== "expanded");
+});
+nav.addEventListener("click", function (e) {
+  var tab = e.target;
+  if (tab.tagName !== "A") return;
+  e.preventDefault();
+  var id = tab.getAttribute("href").slice(1);
+  var all = document.querySelectorAll("nav a, section");
+  for (var i = 0; i < all.length; i++) {
+    all[i].className = (all[i] === tab || all[i].id === id) ? "on" : "";
+  }
+  showCombos(false);
+  expand(false);
+});
+</script>
+</body>
+</html>
