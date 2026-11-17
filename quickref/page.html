@@ -17,6 +17,8 @@ section.on { display: -webkit-flex; display: flex; }
 section svg { -webkit-flex: 1; flex: 1; min-height: 0; width: 100%; height: 100%; }
 .combos { display: none; margin: 0; padding: 16px 16px 16px 36px; overflow-y: auto; -webkit-overflow-scrolling: touch; -webkit-columns: 2 320px; columns: 2 320px; font-size: 19px; line-height: 2; }
 body.combo-view section svg { display: none; }
+.alt { display: none; }
+main { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 body.combo-view .combos { display: block; }
 nav button { margin: 3px; padding: 8px 14px; border: 0; border-radius: 6px; font-size: 15px; font-family: inherit; }
 #view { float: right; background: #e07050; color: #fff; }
@@ -51,6 +53,21 @@ view.addEventListener("click", function () {
   showCombos(document.body.className !== "combo-view");
 });
 syncView(document.querySelector("section.on"));
+function swapKey(key, pos) {
+  var section = key;
+  while (section.nodeName.toUpperCase() !== "SECTION") section = section.parentNode;
+  var other = section.querySelector(".alt ." + pos);
+  if (!other) return;
+  var keyParent = key.parentNode, otherParent = other.parentNode, next = other.nextSibling;
+  keyParent.replaceChild(other, key);
+  otherParent.insertBefore(key, next);
+}
+document.querySelector("main").addEventListener("click", function (e) {
+  for (var node = e.target; node && node.getAttribute; node = node.parentNode) {
+    var pos = (node.getAttribute("class") || "").match(/keypos-\d+/);
+    if (pos) return swapKey(node, pos[0]);
+  }
+});
 more.addEventListener("click", function () {
   expand(nav.className !== "expanded");
 });

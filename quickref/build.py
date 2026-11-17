@@ -64,9 +64,24 @@ def clean(key, layer_names=()):
     return key
 
 
-SHORTCUT_LABELS = {
-    "⌘⇧4": {"t": "Desktop", "s": "Snip"},
-    "⌘⌃⇧4": {"t": "Clipboard", "s": "Snip"},
+FUNCTION_LABELS = {
+    "⌘⇧4": "Snip Desktop",
+    "⌘⌃⇧4": "Snip Clipboard",
+    "⌘Z": "Undo",
+    "⌘⇧Z": "Redo",
+    "⌘X": "Cut",
+    "⌘C": "Copy",
+    "⌘V": "Paste",
+    "⌘A": "Select all",
+    "⌘F": "Find",
+    "⌘G": "Find next",
+    "⌘⇧G": "Find prev",
+    "⌘←": "Home",
+    "⌘→": "End",
+    "⌘H": "Hide",
+    "⌘⌃Q": "Lock screen",
+    "⌃Tab": "Next tab",
+    "⌃⇧Tab": "Prev tab",
 }
 
 SYMBOL_GROUPS = {
@@ -78,12 +93,14 @@ SYMBOL_GROUPS = {
 }
 
 
-def symbolize(key, keep_shifted):
+def symbolize(key, keep_shifted, as_function=True):
     if not isinstance(key, dict):
         key = {"t": key}
     tap, shifted = str(key.get("t", "")), key.get("s")
-    if tap in SHORTCUT_LABELS:
-        return {**SHORTCUT_LABELS[tap], "type": "shortcut"}
+    if tap in FUNCTION_LABELS and "h" not in key:
+        if as_function:
+            return {"t": FUNCTION_LABELS[tap], "s": tap, "type": "shortcut"}
+        return {"t": tap, "type": "shortcut"}
     if tap.startswith("⇧") and isinstance(shifted, str) and shifted.startswith("⇧"):
         key["t"], tap = shifted[1:], shifted[1:]
         del key["s"]
@@ -173,14 +190,21 @@ def slug(name):
     return "".join(c if c.isalnum() else "-" for c in name).lower()
 
 
-def render(parsed):
+def draw(parsed, layers, name):
+    data = {**parsed, "layers": layers}
+    svg = keymap("draw", "-", "-s", name, stdin=yaml.safe_dump(data, allow_unicode=True))
+    return annotate(svg[svg.index("<svg"):])
+
+
+def render(parsed, keystrokes):
     layers = parsed["layers"]
     combos = parsed.pop("combos", [])
     reference = next(iter(layers.values()))
     pinned, extra, sections = [], [], []
     for name in layers:
-        svg = keymap("draw", "-", "-s", name, stdin=yaml.safe_dump(parsed, allow_unicode=True))
-        svg = annotate(svg[svg.index("<svg"):])
+        svg = draw(parsed, layers, name)
+        if keystrokes[name] != layers[name]:
+            svg += f'<div class="alt">{draw(parsed, keystrokes, name)}</div>'
         lines = combo_lines(combos, name, reference)
         items = "".join(f"<li>{html.escape(line)}</li>" for line in lines)
         on = ' class="on"' if not sections else ""
@@ -207,14 +231,18 @@ def main(out_path):
     parsed["layout"] = {"qmk_keyboard": "glove80"}
     names = set(parsed["layers"]) - HIDDEN_LAYERS
     base = next(iter(parsed["layers"]))
+    visible = {
+        n: [clean(k, names) for k in keys] for n, keys in parsed["layers"].items() if n in names
+    }
     parsed["layers"] = {
-        n: [symbolize(clean(k, names), n == base) for k in keys]
-        for n, keys in parsed["layers"].items()
-        if n in names
+        n: [symbolize(k, n == base) for k in keys] for n, keys in visible.items()
+    }
+    keystrokes = {
+        n: [symbolize(k, n == base, as_function=False) for k in keys] for n, keys in visible.items()
     }
     for combo in parsed.get("combos", []):
         combo["k"] = clean(combo["k"])
-    page = render(parsed)
+    page = render(parsed, keystrokes)
     unmapped = sorted(set(re.findall(r">(&amp;[a-z][^<]*)<", page)))
     if unmapped:
         sys.exit(f"unmapped bindings: {unmapped}")
