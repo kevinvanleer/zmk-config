@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
     paths: [quickref/**, .github/workflows/quickref.yml]
+  schedule:
+    - cron: "17 9 * * *"
   workflow_dispatch:
 
 permissions:
@@ -22,11 +24,19 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: kevinvanleer/configs_and_settings
+          path: configs
+          sparse-checkout: osx/.skhdrc
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v7.1.0
         with:
           python-version: "3.x"
       - run: pip install -r quickref/requirements.txt
       - run: mkdir site && python quickref/build.py site/index.html
+        env:
+          SKHDRC: configs/osx/.skhdrc
       - uses: actions/configure-pages@v6.0.0
       - uses: actions/upload-pages-artifact@v5.0.0
         with:

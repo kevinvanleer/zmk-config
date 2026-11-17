@@ -1,3 +1,4 @@
 
 .zmk/
 quickref/index.html
+__pycache__/
