@@ -80,6 +80,7 @@ FUNCTION_LABELS = {
     "⌘→": "End",
     "⌘H": "Hide app",
     "⌘⌃Q": "Lock screen",
+    "⌃W": "VIM\nWND",
     "⌃Tab": "Next tab",
     "⌃⇧Tab": "Prev tab",
 }
