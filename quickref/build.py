@@ -216,7 +216,7 @@ def combo_lines(combos, layer_name, reference_layer):
         keys = " + ".join(position_name(p, reference_layer) for p in combo["p"])
         key = combo["k"]
         action = legend(key)
-        if isinstance(key, dict) and key.get("h"):
+        if isinstance(key, dict) and key.get("h") and key["h"] not in action:
             action += f" ({key['h']})"
         lines.append(f"{keys} = {action}")
     return lines
