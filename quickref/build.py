@@ -99,7 +99,7 @@ def symbolize(key, keep_shifted, as_function=True):
     tap, shifted = str(key.get("t", "")), key.get("s")
     if tap in FUNCTION_LABELS and "h" not in key:
         if as_function:
-            return {"t": FUNCTION_LABELS[tap], "s": tap, "type": "shortcut"}
+            return {"t": FUNCTION_LABELS[tap], "type": "shortcut"}
         return {"t": tap, "type": "shortcut"}
     if tap.startswith("⇧") and isinstance(shifted, str) and shifted.startswith("⇧"):
         key["t"], tap = shifted[1:], shifted[1:]
