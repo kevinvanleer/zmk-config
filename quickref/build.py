@@ -73,8 +73,8 @@ def clean(key, layer_names=()):
 
 
 FUNCTION_LABELS = {
-    "⌘⇧4": "Snip Desktop",
-    "⌘⌃⇧4": "Snip Clipboard",
+    "⌘⇧4": "Snip\nDesk",
+    "⌘⌃⇧4": "Snip\nClip",
     "⌘Z": "Undo",
     "⌘⇧Z": "Redo",
     "⌘X": "Cut",
