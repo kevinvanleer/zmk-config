@@ -23,7 +23,14 @@ PINNED_LAYERS = {"QWERTY", "Cursor", "Number", "Function", "Symbol", "Magic", "C
 FINGER_TAP =re.compile(r"&(?:left|right)_(?:pinky|ringy|middy|index)_tap(?= +[A-Z])")
 
 
+MODIFIER_IN_CHORD = re.compile(r"([⌘⌥⌃⇧]+)[A-Za-z]+\(([⌘⌥⌃⇧])\)$")
+NAMED_CHORDS = {"⌘⌥⌃⇧": "Hyper(⌘⌥⌃⇧)", "⌥⌃⇧": "Meh(⌥⌃⇧)"}
+
+
 def readable(value):
+    if isinstance(value, str):
+        value = MODIFIER_IN_CHORD.sub(r"\1\2", value)
+        value = NAMED_CHORDS.get(value, value)
     if not isinstance(value, str) or not value.startswith("&") or value == "&":
         return value
     words = value[1:].split()[0]
@@ -34,7 +41,7 @@ def readable(value):
     return words.replace("_", " ")
 
 
-HOLD_TYPES = {"Shift": "shift", "Ctrl": "ctrl", "Alt": "alt", "Cmd": "cmd"}
+HOLD_TYPES = {"Shift(⇧)": "shift", "Ctrl(⌃)": "ctrl", "Alt(⌥)": "alt", "Cmd(⌘)": "cmd"}
 LOCK_LAYERS = {"Lower", "Typing"}
 
 
