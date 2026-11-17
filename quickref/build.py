@@ -23,13 +23,14 @@ PINNED_LAYERS = {"QWERTY", "Cursor", "Number", "Function", "Symbol", "Magic", "C
 FINGER_TAP =re.compile(r"&(?:left|right)_(?:pinky|ringy|middy|index)_tap(?= +[A-Z])")
 
 
-MODIFIER_IN_CHORD = re.compile(r"([⌘⌥⌃⇧]+)[A-Za-z]+\(([⌘⌥⌃⇧])\)$")
-NAMED_CHORDS = {"⌘⌥⌃⇧": "Hyper(⌘⌥⌃⇧)", "⌥⌃⇧": "Meh(⌥⌃⇧)"}
+MODIFIER_GLYPHS = {"Cmd": "⌘", "Alt": "⌥", "Ctrl": "⌃", "Shift": "⇧"}
+MODIFIER_IN_CHORD = re.compile(r"([⌘⌥⌃⇧]+)(Cmd|Alt|Ctrl|Shift)$")
+NAMED_CHORDS = {"⌘⌥⌃⇧": "Hyper", "⌥⌃⇧": "Meh"}
 
 
 def readable(value):
     if isinstance(value, str):
-        value = MODIFIER_IN_CHORD.sub(r"\1\2", value)
+        value = MODIFIER_IN_CHORD.sub(lambda m: m[1] + MODIFIER_GLYPHS[m[2]], value)
         value = NAMED_CHORDS.get(value, value)
     if not isinstance(value, str) or not value.startswith("&") or value == "&":
         return value
@@ -41,7 +42,7 @@ def readable(value):
     return words.replace("_", " ")
 
 
-HOLD_TYPES = {"Shift(⇧)": "shift", "Ctrl(⌃)": "ctrl", "Alt(⌥)": "alt", "Cmd(⌘)": "cmd"}
+HOLD_TYPES = {"Shift": "shift", "Ctrl": "ctrl", "Alt": "alt", "Cmd": "cmd"}
 LOCK_LAYERS = {"Lower", "Typing"}
 
 
@@ -150,6 +151,10 @@ THUMBS_LEFT = [52, 53, 54, 69, 70, 71]
 THUMBS_RIGHT = [57, 56, 55, 74, 73, 72]
 
 
+ROWS_BOTTOM_LEFT = 64
+LEGEND = ["⌘  Cmd", "⌥  Alt", "⌃  Ctrl", "⇧  Shift", "▽  from layer below"]
+
+
 def grid_labels(svg):
     matches = KEY_CENTER.findall(svg)
     centers = {int(p): (float(x), float(y)) for x, y, _, p in matches}
@@ -168,6 +173,10 @@ def grid_labels(svg):
             d = -42 if n <= 3 else 42
             labels.append((x - d * math.sin(a), y + d * math.cos(a) + 5, f"T{n}"))
     text = "".join(f'<text x="{x:.0f}" y="{y:.0f}" class="grid">{t}</text>' for x, y, t in labels)
+    legend_top = centers[ROWS_BOTTOM_LEFT][1] + half + 30
+    for n, entry in enumerate(LEGEND):
+        x, y = (n % 2) * 110, legend_top + (n // 2) * 22
+        text += f'<text x="{x}" y="{y:.0f}" class="legend">{html.escape(entry)}</text>'
     return f'<g transform="translate(50, 56)">{text}</g>'
 
 
