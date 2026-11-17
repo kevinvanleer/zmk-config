@@ -3,12 +3,19 @@ draw_config:
   key_h: 56.0
   outer_pad_w: 50.0
   append_colon_to_layer_header: false
-  shrink_wide_legends: 6
+  shrink_wide_legends: 5
   svg_extra_style: |
-    svg.keymap { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; }
+    svg.keymap { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; }
+    text.big { font-size: 22px; }
+    text.shifted { font-size: 13px; }
     rect.key { fill: #fff; stroke: #999; stroke-width: 1.2; }
-    rect.held { fill: #fdd; }
-    text.hold { fill: #333; font-style: italic; font-weight: bold; }
+    rect.key.held { fill: #ffe94d; stroke: #b89400; stroke-width: 2.5; }
+    text.hold { fill: #333; font-style: italic; font-weight: bold; font-size: 11px; }
+    rect.key.sym-brackets { fill: #d6f3ff; stroke: #5aa8d0; }
+    rect.key.sym-quotes { fill: #ffe2ea; stroke: #e0607a; }
+    rect.key.sym-operators { fill: #e8fbd2; stroke: #8cbf5a; }
+    rect.key.sym-punct { fill: #fff7b8; stroke: #d8b830; }
+    rect.key.sym-other { fill: #f3eaff; stroke: #9a7fd0; }
     text.grid { fill: #b0b0b0; font-size: 15px; text-anchor: middle; }
     rect.key.shift { fill: #fff7b8; stroke: #d8b830; }
     rect.key.ctrl { fill: #e8fbd2; stroke: #8cbf5a; }

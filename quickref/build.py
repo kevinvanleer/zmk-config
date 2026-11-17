@@ -64,6 +64,32 @@ def clean(key, layer_names=()):
     return key
 
 
+SYMBOL_GROUPS = {
+    "brackets": "()[]{}<>",
+    "quotes": "'\"`",
+    "operators": "=+-*/%^|&~",
+    "punct": ".,;:?!",
+    "other": "#$@_\\",
+}
+
+
+def symbolize(key, keep_shifted):
+    if not isinstance(key, dict):
+        key = {"t": key}
+    tap, shifted = str(key.get("t", "")), key.get("s")
+    if tap.startswith("⇧") and isinstance(shifted, str) and shifted.startswith("⇧"):
+        key["t"], tap = shifted[1:], shifted[1:]
+        del key["s"]
+    if keep_shifted:
+        return key
+    key.pop("s", None)
+    if "type" not in key and len(tap) == 1:
+        for group, chars in SYMBOL_GROUPS.items():
+            if tap in chars:
+                key["type"] = f"sym-{group}"
+    return key
+
+
 KEY_CENTER = re.compile(
     r'translate\(([-\d.]+), ([-\d.]+)\)(?: rotate\(([-\d.]+)\))?" class="key[^"]*keypos-(\d+)"'
 )
@@ -94,8 +120,12 @@ def grid_labels(svg):
     return f'<g transform="translate(50, 56)">{text}</g>'
 
 
+SHORT_TAP = re.compile(r'(<text [^>]*class="[^"]*\btap)("[^>]*>(?:&#?\w+;|[^<&]){1,2}</text>)')
+
+
 def annotate(svg):
     svg = re.sub(r'<text x="0" y="28" class="label"[^>]*>[^<]*</text>', "", svg)
+    svg = SHORT_TAP.sub(r"\1 big\2", svg)
     return svg.replace("</svg>", grid_labels(svg) + "</svg>")
 
 
@@ -169,8 +199,11 @@ def main(out_path):
     parsed = yaml.safe_load(keymap("parse", "-z", "-", stdin=source))
     parsed["layout"] = {"qmk_keyboard": "glove80"}
     names = set(parsed["layers"]) - HIDDEN_LAYERS
+    base = next(iter(parsed["layers"]))
     parsed["layers"] = {
-        n: [clean(k, names) for k in keys] for n, keys in parsed["layers"].items() if n in names
+        n: [symbolize(clean(k, names), n == base) for k in keys]
+        for n, keys in parsed["layers"].items()
+        if n in names
     }
     for combo in parsed.get("combos", []):
         combo["k"] = clean(combo["k"])
