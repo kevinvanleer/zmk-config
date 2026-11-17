@@ -15,14 +15,15 @@ main { -webkit-flex: 1; flex: 1; min-height: 0; }
 section { display: none; height: 100%; box-sizing: border-box; padding: 4px 12px 8px; -webkit-flex-direction: column; flex-direction: column; }
 section.on { display: -webkit-flex; display: flex; }
 section svg { -webkit-flex: 1; flex: 1; min-height: 0; width: 100%; height: 100%; }
-.combos { display: none; margin: 0; padding: 16px 16px 16px 36px; overflow-y: auto; -webkit-overflow-scrolling: touch; -webkit-columns: 2 320px; columns: 2 320px; font-size: 19px; line-height: 2; }
-body.combo-view section svg { display: none; }
+.combos { display: none; height: 100%; box-sizing: border-box; padding: 8px 24px 16px; overflow-y: auto; -webkit-overflow-scrolling: touch; cursor: auto; }
+.combos h2 { margin: 12px 0 4px; font-size: 15px; font-weight: 600; color: #666; }
+.combos ul { margin: 0; padding-left: 24px; -webkit-columns: 2 320px; columns: 2 320px; font-size: 19px; line-height: 1.9; }
+body.combo-view section.on { display: none; }
 .variant { display: none; }
 main { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 body.combo-view .combos { display: block; }
 nav button { margin: 3px; padding: 8px 14px; border: 0; border-radius: 6px; font-size: 15px; font-family: inherit; }
 #view { float: right; background: #e07050; color: #fff; }
-#view:disabled { background: #ddd; color: #999; }
 #more { background: #fff; color: #335; border: 1px solid #335; }
 #extra a { display: none; }
 #extra a.on, nav.expanded #extra a { display: inline-block; }
@@ -44,15 +45,9 @@ function showCombos(on) {
   document.body.className = on ? "combo-view" : "";
   view.textContent = on ? "Layout" : "Combos";
 }
-function syncView(section) {
-  var none = section.getAttribute("data-combos") === "0";
-  view.disabled = none;
-  if (none) showCombos(false);
-}
 view.addEventListener("click", function () {
   showCombos(document.body.className !== "combo-view");
 });
-syncView(document.querySelector("section.on"));
 function cycleLength(section, pos) {
   var match = (" " + section.getAttribute("data-cycle") + " ").match(new RegExp(" " + pos + ":(\\d+) "));
   return match ? parseInt(match[1], 10) : 1;
@@ -88,7 +83,7 @@ nav.addEventListener("click", function (e) {
   for (var i = 0; i < all.length; i++) {
     all[i].className = (all[i] === tab || all[i].id === id) ? "on" : "";
   }
-  syncView(document.getElementById(id));
+  showCombos(false);
   expand(false);
 });
 </script>

@@ -208,18 +208,27 @@ def position_name(pos, reference_layer):
     return legend(reference_layer[pos]) or f"#{pos}"
 
 
-def combo_lines(combos, layer_name, reference_layer):
-    lines = []
+def combo_groups(combos, layer_names, reference_layer):
+    groups = {}
     for combo in combos:
-        if combo.get("l") and layer_name not in combo["l"]:
+        active = [n for n in layer_names if not combo.get("l") or n in combo["l"]]
+        if not active:
             continue
         keys = " + ".join(position_name(p, reference_layer) for p in combo["p"])
         key = combo["k"]
         action = legend(key)
         if isinstance(key, dict) and key.get("h") and key["h"] not in action:
             action += f" ({key['h']})"
-        lines.append(f"{keys} = {action}")
-    return lines
+        groups.setdefault(", ".join(active), []).append(f"{keys} = {action}")
+    return groups
+
+
+def combo_list(groups):
+    parts = []
+    for active, lines in groups.items():
+        items = "".join(f"<li>{html.escape(line)}</li>" for line in lines)
+        parts.append(f"<h2>Active on: {html.escape(active)}</h2><ul>{items}</ul>")
+    return f'<div class="combos">{"".join(parts)}</div>'
 
 
 def slug(name):
@@ -243,16 +252,11 @@ def render(parsed, alternates, cycles):
         for n, alternate in enumerate(alternates[: longest - 1], 1):
             svg += f'<div class="variant" data-n="{n}">{draw(parsed, alternate, name)}</div>'
         cycle = " ".join(f"{pos}:{m}" for pos, m in cycles[name].items())
-        lines = combo_lines(combos, name, reference)
-        items = "".join(f"<li>{html.escape(line)}</li>" for line in lines)
         on = ' class="on"' if not sections else ""
         tab = f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>'
         (pinned if name in PINNED_LAYERS else extra).append(tab)
-        sections.append(
-            f'<section id="{slug(name)}" data-combos="{len(lines)}" data-cycle="{cycle}"{on}>{svg}'
-            + f'<ul class="combos">{items}</ul>'
-            + "</section>"
-        )
+        sections.append(f'<section id="{slug(name)}" data-cycle="{cycle}"{on}>{svg}</section>')
+    sections.append(combo_list(combo_groups(combos, list(layers), reference)))
     with open(os.path.join(HERE, "page.html")) as f:
         template = f.read()
     return (
