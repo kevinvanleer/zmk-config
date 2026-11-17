@@ -6,6 +6,7 @@ draw_config:
   shrink_wide_legends: 6
   svg_extra_style: |
     svg.keymap { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; }
+    svg.keymap text { dominant-baseline: auto; }
     text.big { font-size: 22px; }
     text.shifted { font-size: 13px; }
     rect.key { fill: #fff; stroke: #999; stroke-width: 1.2; }

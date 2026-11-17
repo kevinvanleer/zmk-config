@@ -183,10 +183,30 @@ def grid_labels(svg):
 SHORT_TAP = re.compile(r'(<text [^>]*class="[^"]*\btap)("[^>]*>(?:&#?\w+;|[^<&]){1,2}</text>)')
 
 
+TEXT = re.compile(r'<text ([^>]*class="([^"]*)"[^>]*)>(.*?)</text>', re.S)
+FIRST_DY = re.compile(r'dy="(-?[\d.]+)em"')
+CENTER_DY = 0.35
+TOP_DY = 0.75
+GLYPH_NUDGE = {",": -0.2, ".": -0.2, "_": -0.3, "'": 0.25, '"': 0.25, "`": 0.25, "^": 0.2, "*": 0.15, "~": 0.1, "-": 0.05}
+
+
+def explicit_baseline(match):
+    attrs, classes, body = match.groups()
+    classes = classes.split()
+    if "hold" in classes:
+        return match[0]
+    shift = TOP_DY if "shifted" in classes else CENTER_DY + GLYPH_NUDGE.get(html.unescape(body), 0)
+    if "<tspan" in body:
+        body = FIRST_DY.sub(lambda m: f'dy="{float(m[1]) + shift:g}em"', body, count=1)
+        return f"<text {attrs}>{body}</text>"
+    return f'<text {attrs} dy="{shift:g}em">{body}</text>'
+
+
 def annotate(svg):
     svg = re.sub(r'<text x="0" y="28" class="label"[^>]*>[^<]*</text>', "", svg)
     svg = SHORT_TAP.sub(r"\1 big\2", svg)
-    return svg.replace("</svg>", grid_labels(svg) + "</svg>")
+    svg = svg.replace("</svg>", grid_labels(svg) + "</svg>")
+    return TEXT.sub(explicit_baseline, svg)
 
 
 def keymap(*args, stdin=None):
