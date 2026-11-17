@@ -66,10 +66,49 @@ function cycleKey(key, pos) {
   }
   for (i = 0; i < length; i++) marks[i].parentNode.replaceChild(nodes[(i + 1) % length], marks[i]);
 }
+var base = document.querySelector("section[data-hold]");
+var held = {};
+var MODS = ["cmd", "alt", "ctrl", "shift"];
+function holdMod(pos) {
+  var match = base && (" " + base.getAttribute("data-hold") + " ").match(new RegExp(" " + pos + ":(\\w+) "));
+  return match ? match[1] : null;
+}
+function chord() {
+  return MODS.filter(function (m) { return held[m]; }).join(" ");
+}
+function show(id) {
+  var all = document.querySelectorAll("nav a, section");
+  for (var i = 0; i < all.length; i++) {
+    all[i].className = (all[i].getAttribute("href") === "#" + id || all[i].id === id) ? "on" : "";
+  }
+  showCombos(false);
+  expand(false);
+}
+function markHeld() {
+  var keys = base.querySelectorAll("section > svg g[class*=keypos-] > rect");
+  for (var i = 0; i < keys.length; i++) {
+    var pos = keys[i].parentNode.getAttribute("class").match(/keypos-(\d+)/)[1];
+    var name = (keys[i].getAttribute("class") || "").replace(/ held/g, "");
+    keys[i].setAttribute("class", held[holdMod(pos)] ? name + " held" : name);
+  }
+}
+function toggleHold(mod) {
+  held[mod] = !held[mod];
+  var current = chord();
+  var target = current && document.querySelector('section[data-chord="' + current + '"]');
+  markHeld();
+  show(target ? target.id : base.id);
+}
 document.querySelector("main").addEventListener("click", function (e) {
   for (var node = e.target; node && node.getAttribute; node = node.parentNode) {
     var pos = (node.getAttribute("class") || "").match(/keypos-(\d+)/);
-    if (pos) return cycleKey(node, pos[1]);
+    if (!pos) continue;
+    var section = document.querySelector("section.on");
+    var link = (" " + section.getAttribute("data-goto") + " ").match(new RegExp(" " + pos[1] + ":([\\w-]+) "));
+    if (link) return openLayer(link[1]);
+    var mod = holdMod(pos[1]);
+    if (mod && (section === base || section.getAttribute("data-chord") !== null)) return toggleHold(mod);
+    return cycleKey(node, pos[1]);
   }
 });
 more.addEventListener("click", function () {
@@ -79,14 +118,15 @@ nav.addEventListener("click", function (e) {
   var tab = e.target;
   if (tab.tagName !== "A") return;
   e.preventDefault();
-  var id = tab.getAttribute("href").slice(1);
-  var all = document.querySelectorAll("nav a, section");
-  for (var i = 0; i < all.length; i++) {
-    all[i].className = (all[i] === tab || all[i].id === id) ? "on" : "";
-  }
-  showCombos(false);
-  expand(false);
+  openLayer(tab.getAttribute("href").slice(1));
 });
+function openLayer(id) {
+  var mods = (document.getElementById(id).getAttribute("data-chord") || "").split(" ");
+  held = {};
+  for (var i = 0; i < mods.length; i++) if (mods[i]) held[mods[i]] = true;
+  if (base) markHeld();
+  show(id);
+}
 </script>
 </body>
 </html>

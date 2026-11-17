@@ -282,10 +282,24 @@ def draw(parsed, layers, name):
     return annotate(svg[svg.index("<svg"):])
 
 
-def render(parsed, alternates, cycles, notes):
+def layer_links(name, keys, layer_names, base):
+    links = []
+    for pos, key in enumerate(keys):
+        if not isinstance(key, dict):
+            continue
+        target = next((v for v in (key.get("h"), key.get("t")) if v in layer_names), None)
+        if key.get("type") == "held" or target == name:
+            target = base
+        if target:
+            links.append(f"{pos}:{slug(target)}")
+    return " ".join(links)
+
+
+def render(parsed, alternates, cycles, notes, attrs):
     layers = parsed["layers"]
     combos = parsed.pop("combos", [])
-    reference = next(iter(layers.values()))
+    reference_name = next(iter(layers))
+    reference = layers[reference_name]
     pinned, extra, sections = [], [], []
     for name in layers:
         svg = draw(parsed, layers, name)
@@ -298,7 +312,10 @@ def render(parsed, alternates, cycles, notes):
         on = ' class="on"' if not sections else ""
         tab = f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>'
         (pinned if name in PINNED_LAYERS else extra).append(tab)
-        sections.append(f'<section id="{slug(name)}" data-cycle="{cycle}"{on}>{svg}</section>')
+        links = layer_links(name, layers[name], cycles, reference_name) if name in cycles else ""
+        sections.append(
+            f'<section id="{slug(name)}" data-cycle="{cycle}" data-goto="{links}"{attrs.get(name, "")}{on}>{svg}</section>'
+        )
     sections.append(combo_list(combo_groups(combos, list(cycles), reference)))
     with open(os.path.join(HERE, "page.html")) as f:
         template = f.read()
@@ -330,7 +347,16 @@ def skhd_layer(base_keys, mods, bindings):
     return keys
 
 
-def add_skhd_layers(layers, base):
+def hold_positions(base_keys):
+    modifier = {v: k for k, v in HOLD_NAMES.items()}
+    return " ".join(
+        f"{pos}:{modifier[key['h']]}"
+        for pos, key in enumerate(base_keys)
+        if isinstance(key, dict) and key.get("h") in modifier
+    )
+
+
+def add_skhd_layers(layers, base, attrs):
     if not os.path.exists(SKHDRC):
         print(f"no skhd config at {SKHDRC}, skipping skhd layers", file=sys.stderr)
         return {}
@@ -338,9 +364,11 @@ def add_skhd_layers(layers, base):
         tabs, others = skhd.layers(f.read())
     base_keys = layers[base]
     on_base = {legend(k) for k in base_keys}
+    attrs[base] = f' data-hold="{hold_positions(base_keys)}"'
     notes = {}
     for name, mods, bindings in tabs:
         layers[name] = skhd_layer(base_keys, mods, bindings)
+        attrs[name] = f' data-chord="{" ".join(m for m in HOLD_NAMES if m in mods)}"'
         notes[name] = [f"{skhd.chord_name(mods)}{k}: {v}".replace("\n", " ") for k, v in bindings.items() if k not in on_base]
     if tabs and others:
         notes[tabs[-1][0]].append("Also " + " · ".join(others))
@@ -369,8 +397,9 @@ def main(out_path):
     parsed["layers"] = variants[0]
     for combo in parsed.get("combos", []):
         combo["k"] = clean(combo["k"])
-    notes = add_skhd_layers(parsed["layers"], base)
-    page = render(parsed, variants[1:], cycles, notes)
+    attrs = {}
+    notes = add_skhd_layers(parsed["layers"], base, attrs)
+    page = render(parsed, variants[1:], cycles, notes, attrs)
     unmapped = sorted(set(re.findall(r">(&amp;[a-z][^<]*)<", page)))
     if unmapped:
         sys.exit(f"unmapped bindings: {unmapped}")
