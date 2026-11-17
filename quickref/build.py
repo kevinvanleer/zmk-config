@@ -8,6 +8,8 @@ import sys
 
 import yaml
 
+import skhd
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 KEYMAP_CLI = os.environ.get("KEYMAP_CLI") or shutil.which("keymap") or "keymap"
 
@@ -269,6 +271,8 @@ def combo_list(groups):
 
 
 def slug(name):
+    for word, glyph in MODIFIER_GLYPHS.items():
+        name = name.replace(glyph, f"-{word}")
     return "".join(c if c.isalnum() else "-" for c in name).lower()
 
 
@@ -278,22 +282,24 @@ def draw(parsed, layers, name):
     return annotate(svg[svg.index("<svg"):])
 
 
-def render(parsed, alternates, cycles):
+def render(parsed, alternates, cycles, notes):
     layers = parsed["layers"]
     combos = parsed.pop("combos", [])
     reference = next(iter(layers.values()))
     pinned, extra, sections = [], [], []
     for name in layers:
         svg = draw(parsed, layers, name)
-        longest = max([1, *cycles[name].values()])
+        longest = max([1, *cycles.get(name, {}).values()])
         for n, alternate in enumerate(alternates[: longest - 1], 1):
             svg += f'<div class="variant" data-n="{n}">{draw(parsed, alternate, name)}</div>'
-        cycle = " ".join(f"{pos}:{m}" for pos, m in cycles[name].items())
+        cycle = " ".join(f"{pos}:{m}" for pos, m in cycles.get(name, {}).items())
+        if notes.get(name):
+            svg += f'<p class="note">{html.escape(" · ".join(notes[name]))}</p>'
         on = ' class="on"' if not sections else ""
         tab = f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>'
         (pinned if name in PINNED_LAYERS else extra).append(tab)
         sections.append(f'<section id="{slug(name)}" data-cycle="{cycle}"{on}>{svg}</section>')
-    sections.append(combo_list(combo_groups(combos, list(layers), reference)))
+    sections.append(combo_list(combo_groups(combos, list(cycles), reference)))
     with open(os.path.join(HERE, "page.html")) as f:
         template = f.read()
     return (
@@ -301,6 +307,44 @@ def render(parsed, alternates, cycles):
         .replace("{{extra}}", "".join(extra))
         .replace("{{sections}}", "".join(sections))
     )
+
+
+SKHDRC = os.environ.get("SKHDRC") or os.path.expanduser("~/.skhdrc")
+HOLD_NAMES = {"cmd": "Cmd", "alt": "Alt", "ctrl": "Ctrl", "shift": "Shift"}
+
+
+def skhd_layer(base_keys, mods, bindings):
+    held = {HOLD_NAMES[m] for m in mods}
+    keys = []
+    for key in base_keys:
+        tap = legend(key)
+        hold = key.get("h") if isinstance(key, dict) else None
+        if tap in bindings:
+            keys.append({"t": bindings[tap], "type": "shortcut"})
+        elif hold in held:
+            keys.append({"t": tap, "h": hold, "type": "held"})
+        elif tap:
+            keys.append({"t": tap, "type": "trans"})
+        else:
+            keys.append({"t": "", "type": "none"})
+    return keys
+
+
+def add_skhd_layers(layers, base):
+    if not os.path.exists(SKHDRC):
+        print(f"no skhd config at {SKHDRC}, skipping skhd layers", file=sys.stderr)
+        return {}
+    with open(SKHDRC) as f:
+        tabs, others = skhd.layers(f.read())
+    base_keys = layers[base]
+    on_base = {legend(k) for k in base_keys}
+    notes = {}
+    for name, mods, bindings in tabs:
+        layers[name] = skhd_layer(base_keys, mods, bindings)
+        notes[name] = [f"{skhd.chord_name(mods)}{k}: {v}".replace("\n", " ") for k, v in bindings.items() if k not in on_base]
+    if tabs and others:
+        notes[tabs[-1][0]].append("Also " + " · ".join(others))
+    return notes
 
 
 def main(out_path):
@@ -325,7 +369,8 @@ def main(out_path):
     parsed["layers"] = variants[0]
     for combo in parsed.get("combos", []):
         combo["k"] = clean(combo["k"])
-    page = render(parsed, variants[1:], cycles)
+    notes = add_skhd_layers(parsed["layers"], base)
+    page = render(parsed, variants[1:], cycles, notes)
     unmapped = sorted(set(re.findall(r">(&amp;[a-z][^<]*)<", page)))
     if unmapped:
         sys.exit(f"unmapped bindings: {unmapped}")
