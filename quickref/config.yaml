@@ -3,7 +3,7 @@ draw_config:
   key_h: 56.0
   outer_pad_w: 50.0
   append_colon_to_layer_header: false
-  shrink_wide_legends: 5
+  shrink_wide_legends: 6
   svg_extra_style: |
     svg.keymap { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 15px; }
     text.big { font-size: 22px; }
@@ -11,6 +11,8 @@ draw_config:
     rect.key { fill: #fff; stroke: #999; stroke-width: 1.2; }
     rect.key.held { fill: #ffe94d; stroke: #b89400; stroke-width: 2.5; }
     text.hold { fill: #333; font-style: italic; font-weight: bold; font-size: 11px; }
+    rect.key.shortcut { fill: #e9f0fb; stroke: #6f8fc0; }
+    text.shortcut { font-size: 11px; }
     rect.key.sym-brackets { fill: #d6f3ff; stroke: #5aa8d0; }
     rect.key.sym-quotes { fill: #ffe2ea; stroke: #e0607a; }
     rect.key.sym-operators { fill: #e8fbd2; stroke: #8cbf5a; }

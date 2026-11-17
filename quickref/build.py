@@ -64,6 +64,11 @@ def clean(key, layer_names=()):
     return key
 
 
+SHORTCUT_LABELS = {
+    "⌘⇧4": {"t": "Desktop", "s": "Snip"},
+    "⌘⌃⇧4": {"t": "Clipboard", "s": "Snip"},
+}
+
 SYMBOL_GROUPS = {
     "brackets": "()[]{}<>",
     "quotes": "'\"`",
@@ -77,6 +82,8 @@ def symbolize(key, keep_shifted):
     if not isinstance(key, dict):
         key = {"t": key}
     tap, shifted = str(key.get("t", "")), key.get("s")
+    if tap in SHORTCUT_LABELS:
+        return {**SHORTCUT_LABELS[tap], "type": "shortcut"}
     if tap.startswith("⇧") and isinstance(shifted, str) and shifted.startswith("⇧"):
         key["t"], tap = shifted[1:], shifted[1:]
         del key["s"]
