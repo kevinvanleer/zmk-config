@@ -184,7 +184,9 @@ SHORT_TAP = re.compile(r'(<text [^>]*class="[^"]*\btap)("[^>]*>(?:&#?\w+;|[^<&])
 
 
 TEXT = re.compile(r'<text ([^>]*class="([^"]*)"[^>]*)>(.*?)</text>', re.S)
-FIRST_DY = re.compile(r'dy="(-?[\d.]+)em"')
+EM_DY = re.compile(r'dy="(-?[\d.]+)em"')
+FONT_PX = {"big": 22, "shifted": 13}
+DEFAULT_FONT_PX = 15
 CENTER_DY = 0.35
 TOP_DY = 0.75
 GLYPH_NUDGE = {",": -0.2, ".": -0.2, "_": -0.3, "'": 0.25, '"': 0.25, "`": 0.25, "^": 0.2, "*": 0.15, "~": 0.1, "-": 0.05}
@@ -195,17 +197,32 @@ def explicit_baseline(match):
     classes = classes.split()
     if "hold" in classes:
         return match[0]
+    px = next((FONT_PX[c] for c in classes if c in FONT_PX), DEFAULT_FONT_PX)
     shift = TOP_DY if "shifted" in classes else CENTER_DY + GLYPH_NUDGE.get(html.unescape(body), 0)
+    below = BELOW_SHIFTED_PX if "below-shifted" in classes else 0
     if "<tspan" in body:
-        body = FIRST_DY.sub(lambda m: f'dy="{float(m[1]) + shift:g}em"', body, count=1)
+        offsets = iter([shift * px + below])
+        body = EM_DY.sub(lambda m: f'dy="{float(m[1]) * px + next(offsets, 0):.1f}"', body)
         return f"<text {attrs}>{body}</text>"
-    return f'<text {attrs} dy="{shift:g}em">{body}</text>'
+    return f'<text {attrs} dy="{shift * px + below:.1f}">{body}</text>'
+
+
+KEY_GROUP = re.compile(r'<g transform="[^"]*" class="key[^"]*">.*?</g>', re.S)
+BELOW_SHIFTED_PX = 5
+
+
+def mark_below_shifted(match):
+    group = match[0]
+    if " shifted" not in group or " hold" in group:
+        return group
+    return re.sub(r'class="([^"]*\btap\b[^"]*)"', r'class="\1 below-shifted"', group, count=1)
 
 
 def annotate(svg):
     svg = re.sub(r'<text x="0" y="28" class="label"[^>]*>[^<]*</text>', "", svg)
     svg = SHORT_TAP.sub(r"\1 big\2", svg)
     svg = svg.replace("</svg>", grid_labels(svg) + "</svg>")
+    svg = KEY_GROUP.sub(mark_below_shifted, svg)
     return TEXT.sub(explicit_baseline, svg)
 
 
