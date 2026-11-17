@@ -20,6 +20,7 @@ body.combo-view section svg { display: none; }
 body.combo-view .combos { display: block; }
 nav button { margin: 3px; padding: 8px 14px; border: 0; border-radius: 6px; font-size: 15px; font-family: inherit; }
 #view { float: right; background: #e07050; color: #fff; }
+#view:disabled { background: #ddd; color: #999; }
 #more { background: #fff; color: #335; border: 1px solid #335; }
 #extra a { display: none; }
 #extra a.on, nav.expanded #extra a { display: inline-block; }
@@ -31,15 +32,24 @@ nav button { margin: 3px; padding: 8px 14px; border: 0; border-radius: 6px; font
 <script>
 var nav = document.querySelector("nav");
 var more = document.getElementById("more");
+var view = document.getElementById("view");
 function expand(open) {
   nav.className = open ? "expanded" : "";
   more.textContent = open ? "Less ▴" : "More ▾";
 }
-document.getElementById("view").addEventListener("click", function () {
-  var combos = document.body.className !== "combo-view";
-  document.body.className = combos ? "combo-view" : "";
-  this.textContent = combos ? "Layout" : "Combos";
+function showCombos(on) {
+  document.body.className = on ? "combo-view" : "";
+  view.textContent = on ? "Layout" : "Combos";
+}
+function syncView(section) {
+  var none = section.getAttribute("data-combos") === "0";
+  view.disabled = none;
+  if (none) showCombos(false);
+}
+view.addEventListener("click", function () {
+  showCombos(document.body.className !== "combo-view");
 });
+syncView(document.querySelector("section.on"));
 more.addEventListener("click", function () {
   expand(nav.className !== "expanded");
 });
@@ -52,6 +62,7 @@ nav.addEventListener("click", function (e) {
   for (var i = 0; i < all.length; i++) {
     all[i].className = (all[i] === tab || all[i].id === id) ? "on" : "";
   }
+  syncView(document.getElementById(id));
   expand(false);
 });
 </script>

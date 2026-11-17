@@ -144,13 +144,14 @@ def render(parsed):
     for name in layers:
         svg = keymap("draw", "-", "-s", name, stdin=yaml.safe_dump(parsed, allow_unicode=True))
         svg = annotate(svg[svg.index("<svg"):])
-        items = "".join(f"<li>{html.escape(line)}</li>" for line in combo_lines(combos, name, reference))
+        lines = combo_lines(combos, name, reference)
+        items = "".join(f"<li>{html.escape(line)}</li>" for line in lines)
         on = ' class="on"' if not sections else ""
         tab = f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>'
         (pinned if name in PINNED_LAYERS else extra).append(tab)
         sections.append(
-            f'<section id="{slug(name)}"{on}>{svg}'
-            + f'<ul class="combos">{items or "<li>No combos on this layer.</li>"}</ul>'
+            f'<section id="{slug(name)}" data-combos="{len(lines)}"{on}>{svg}'
+            + f'<ul class="combos">{items}</ul>'
             + "</section>"
         )
     with open(os.path.join(HERE, "page.html")) as f:
