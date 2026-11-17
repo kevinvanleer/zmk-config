@@ -141,7 +141,7 @@ parse_config:
     LCTL: {t: Ctrl, type: ctrl}
     RCTL: {t: Ctrl, type: ctrl}
     LALT: {t: Alt, type: alt}
-    RALT: {t: AltGr, type: alt}
+    RALT: {t: RAlt, type: alt}
     LGUI: {t: Cmd, type: cmd}
     RGUI: {t: Cmd, type: cmd}
     GLOBE: Globe
