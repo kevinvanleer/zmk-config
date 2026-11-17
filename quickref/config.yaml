@@ -12,6 +12,8 @@ draw_config:
     rect.key.held { fill: #ffe94d; stroke: #b89400; stroke-width: 2.5; }
     text.hold { fill: #333; font-style: italic; font-weight: bold; font-size: 11px; }
     rect.key.shortcut { fill: #e9f0fb; stroke: #6f8fc0; }
+    rect.key.leader { fill: #c8f5d8; stroke: #1f9d55; stroke-width: 2.5; }
+    text.leader.hold { fill: #1f7a44; }
     rect.key.sym-brackets { fill: #d6f3ff; stroke: #5aa8d0; }
     rect.key.sym-quotes { fill: #ffe2ea; stroke: #e0607a; }
     rect.key.sym-operators { fill: #e8fbd2; stroke: #8cbf5a; }

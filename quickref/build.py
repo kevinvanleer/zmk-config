@@ -100,6 +100,8 @@ def label_cycle(key):
         return [tap, *APP_FUNCTIONS[tap]]
     return []
 
+VIM_LEADER = "["
+
 SYMBOL_GROUPS = {
     "brackets": "()[]{}<>",
     "quotes": "'\"`",
@@ -119,6 +121,8 @@ def symbolize(key, keep_shifted, variant=0):
     if tap.startswith("⇧") and isinstance(shifted, str) and shifted.startswith("⇧"):
         key["t"], tap = shifted[1:], shifted[1:]
         del key["s"]
+    if tap == VIM_LEADER and "h" not in key:
+        key.update({"type": "leader", "h": "leader"})
     if keep_shifted:
         return key
     key.pop("s", None)
@@ -220,7 +224,7 @@ def render(parsed, alternates, cycles):
         svg = draw(parsed, layers, name)
         longest = max([1, *cycles[name].values()])
         for n, alternate in enumerate(alternates[: longest - 1], 1):
-            svg += f'<div class="alt" data-n="{n}">{draw(parsed, alternate, name)}</div>'
+            svg += f'<div class="variant" data-n="{n}">{draw(parsed, alternate, name)}</div>'
         cycle = " ".join(f"{pos}:{m}" for pos, m in cycles[name].items())
         lines = combo_lines(combos, name, reference)
         items = "".join(f"<li>{html.escape(line)}</li>" for line in lines)
