@@ -18,6 +18,7 @@ THUMBS = {
 
 
 HIDDEN_LAYERS = {"Enthium", "Engrammer", "Engram", "Dvorak", "ColemakDH", "Canary"}
+PINNED_LAYERS = {"QWERTY", "Cursor", "Number", "Function", "Symbol", "Magic", "CAD"}
 
 FINGER_TAP =re.compile(r"&(?:left|right)_(?:pinky|ringy|middy|index)_tap(?= +[A-Z])")
 
@@ -139,13 +140,14 @@ def render(parsed):
     layers = parsed["layers"]
     combos = parsed.pop("combos", [])
     reference = next(iter(layers.values()))
-    tabs, sections = [], []
+    pinned, extra, sections = [], [], []
     for name in layers:
         svg = keymap("draw", "-", "-s", name, stdin=yaml.safe_dump(parsed, allow_unicode=True))
         svg = annotate(svg[svg.index("<svg"):])
         items = "".join(f"<li>{html.escape(line)}</li>" for line in combo_lines(combos, name, reference))
-        on = ' class="on"' if not tabs else ""
-        tabs.append(f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>')
+        on = ' class="on"' if not sections else ""
+        tab = f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>'
+        (pinned if name in PINNED_LAYERS else extra).append(tab)
         sections.append(
             f'<section id="{slug(name)}"{on}>{svg}'
             + f'<ul class="combos">{items or "<li>No combos on this layer.</li>"}</ul>'
@@ -153,7 +155,11 @@ def render(parsed):
         )
     with open(os.path.join(HERE, "page.html")) as f:
         template = f.read()
-    return template.replace("{{tabs}}", "".join(tabs)).replace("{{sections}}", "".join(sections))
+    return (
+        template.replace("{{pinned}}", "".join(pinned))
+        .replace("{{extra}}", "".join(extra))
+        .replace("{{sections}}", "".join(sections))
+    )
 
 
 def main(out_path):
