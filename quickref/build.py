@@ -1,4 +1,5 @@
 import html
+import math
 import os
 import re
 import shutil
@@ -16,7 +17,9 @@ THUMBS = {
 }
 
 
-FINGER_TAP = re.compile(r"&(?:left|right)_(?:pinky|ringy|middy|index)_tap(?= +[A-Z])")
+HIDDEN_LAYERS = {"Enthium", "Engrammer", "Engram", "Dvorak", "ColemakDH", "Canary"}
+
+FINGER_TAP =re.compile(r"&(?:left|right)_(?:pinky|ringy|middy|index)_tap(?= +[A-Z])")
 
 
 def readable(value):
@@ -31,18 +34,68 @@ def readable(value):
 
 
 HOLD_TYPES = {"Shift": "shift", "Ctrl": "ctrl", "Alt": "alt", "Cmd": "cmd"}
+LOCK_LAYERS = {"Lower", "Typing"}
+
+
+def key_type(key, layer_names):
+    tap, hold = key.get("t"), key.get("h")
+    if hold in HOLD_TYPES:
+        return HOLD_TYPES[hold]
+    if hold == "Magic":
+        return "magic"
+    if hold == "toggle" or tap in LOCK_LAYERS or hold in LOCK_LAYERS:
+        return "lock"
+    if hold in layer_names:
+        return "layer"
+    return None
 
 
 def clean(key, layer_names=()):
+    if key == "":
+        return {"t": "", "type": "none"}
     if not isinstance(key, dict):
-        return readable(key)
+        key = readable(key)
+        return {"t": key, "type": "lock"} if key in LOCK_LAYERS else key
     key = {k: readable(v) for k, v in key.items()}
-    hold = key.get("h")
-    if "type" not in key and hold in HOLD_TYPES:
-        key["type"] = HOLD_TYPES[hold]
-    elif "type" not in key and hold in layer_names:
-        key["type"] = "layer"
+    kind = key_type(key, layer_names)
+    if "type" not in key and kind:
+        key["type"] = kind
     return key
+
+
+KEY_CENTER = re.compile(
+    r'translate\(([-\d.]+), ([-\d.]+)\)(?: rotate\(([-\d.]+)\))?" class="key[^"]*keypos-(\d+)"'
+)
+COLUMNS = dict(zip(range(10, 22), [6, 5, 4, 3, 2, 1, 1, 2, 3, 4, 5, 6]))
+ROWS = dict(zip([0, 10, 22, 34, 46, 64], range(1, 7)))
+THUMBS_LEFT = [52, 53, 54, 69, 70, 71]
+THUMBS_RIGHT = [57, 56, 55, 74, 73, 72]
+
+
+def grid_labels(svg):
+    matches = KEY_CENTER.findall(svg)
+    centers = {int(p): (float(x), float(y)) for x, y, _, p in matches}
+    angles = {int(p): math.radians(float(a or 0)) for _, _, a, p in matches}
+    half = 28
+    top = min(y for _, y in centers.values()) - half - 14
+    right = max(x for x, _ in centers.values()) + half + 22
+    labels = [(centers[p][0], top, f"C{c}") for p, c in COLUMNS.items()]
+    for p, r in ROWS.items():
+        y = centers[p][1] + 5
+        labels += [(-22, y, f"R{r}"), (right, y, f"R{r}")]
+    for cluster in (THUMBS_LEFT, THUMBS_RIGHT):
+        for n, p in enumerate(cluster, 1):
+            x, y = centers[p]
+            a = angles[p]
+            d = -42 if n <= 3 else 42
+            labels.append((x - d * math.sin(a), y + d * math.cos(a) + 5, f"T{n}"))
+    text = "".join(f'<text x="{x:.0f}" y="{y:.0f}" class="grid">{t}</text>' for x, y, t in labels)
+    return f'<g transform="translate(50, 56)">{text}</g>'
+
+
+def annotate(svg):
+    svg = re.sub(r'<text x="0" y="28" class="label"[^>]*>[^<]*</text>', "", svg)
+    return svg.replace("</svg>", grid_labels(svg) + "</svg>")
 
 
 def keymap(*args, stdin=None):
@@ -89,12 +142,13 @@ def render(parsed):
     tabs, sections = [], []
     for name in layers:
         svg = keymap("draw", "-", "-s", name, stdin=yaml.safe_dump(parsed, allow_unicode=True))
-        svg = svg[svg.index("<svg"):]
+        svg = annotate(svg[svg.index("<svg"):])
         items = "".join(f"<li>{html.escape(line)}</li>" for line in combo_lines(combos, name, reference))
-        tabs.append(f'<a href="#{slug(name)}">{html.escape(name)}</a>')
+        on = ' class="on"' if not tabs else ""
+        tabs.append(f'<a href="#{slug(name)}"{on}>{html.escape(name)}</a>')
         sections.append(
-            f'<section id="{slug(name)}">{svg}'
-            + (f'<ul class="combos">{items}</ul>' if items else "")
+            f'<section id="{slug(name)}"{on}>{svg}'
+            + f'<ul class="combos">{items or "<li>No combos on this layer.</li>"}</ul>'
             + "</section>"
         )
     with open(os.path.join(HERE, "page.html")) as f:
@@ -107,8 +161,10 @@ def main(out_path):
         source = FINGER_TAP.sub("&kp", f.read())
     parsed = yaml.safe_load(keymap("parse", "-z", "-", stdin=source))
     parsed["layout"] = {"qmk_keyboard": "glove80"}
-    names = set(parsed["layers"])
-    parsed["layers"] = {n: [clean(k, names) for k in keys] for n, keys in parsed["layers"].items()}
+    names = set(parsed["layers"]) - HIDDEN_LAYERS
+    parsed["layers"] = {
+        n: [clean(k, names) for k in keys] for n, keys in parsed["layers"].items() if n in names
+    }
     for combo in parsed.get("combos", []):
         combo["k"] = clean(combo["k"])
     page = render(parsed)

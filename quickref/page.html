@@ -6,17 +6,41 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Glove80 Layers</title>
 <style>
-body { margin: 0; background: #f2f2f2; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color: #222; }
-nav { position: -webkit-sticky; position: sticky; top: 0; z-index: 1; background: #fff; border-bottom: 1px solid #ccc; padding: 6px 8px; }
-nav a { display: inline-block; margin: 3px; padding: 8px 12px; border-radius: 6px; background: #eee; color: #222; text-decoration: none; font-size: 15px; }
-nav a:active { background: #cde; }
-section { padding: 8px 16px 24px; border-bottom: 1px solid #ddd; }
-section svg { display: block; width: 100%; height: auto; }
-.combos { -webkit-columns: 2; columns: 2; margin: 0; padding: 0 0 0 20px; font-size: 14px; line-height: 1.6; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
+body { position: fixed; top: 0; right: 0; bottom: 0; left: 0; display: -webkit-flex; display: flex; -webkit-flex-direction: column; flex-direction: column; background: #f2f2f2; font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; color: #222; }
+nav { -webkit-flex: none; flex: none; background: #fff; border-bottom: 1px solid #ccc; padding: 4px 6px; }
+nav a { display: inline-block; margin: 3px; padding: 8px 11px; border-radius: 6px; background: #eee; color: #222; text-decoration: none; font-size: 15px; }
+nav a.on { background: #335; color: #fff; }
+main { -webkit-flex: 1; flex: 1; min-height: 0; }
+section { display: none; height: 100%; box-sizing: border-box; padding: 4px 12px 8px; -webkit-flex-direction: column; flex-direction: column; }
+section.on { display: -webkit-flex; display: flex; }
+section svg { -webkit-flex: 1; flex: 1; min-height: 0; width: 100%; height: 100%; }
+.combos { display: none; margin: 0; padding: 16px 16px 16px 36px; overflow-y: auto; -webkit-overflow-scrolling: touch; -webkit-columns: 2 320px; columns: 2 320px; font-size: 19px; line-height: 2; }
+body.combo-view section svg { display: none; }
+body.combo-view .combos { display: block; }
+nav button { float: right; margin: 3px; padding: 8px 14px; border: 0; border-radius: 6px; background: #e07050; color: #fff; font-size: 15px; font-family: inherit; }
 </style>
 </head>
 <body>
-<nav>{{tabs}}</nav>
-{{sections}}
+<nav><button type="button">Combos</button>{{tabs}}</nav>
+<main>{{sections}}</main>
+<script>
+document.querySelector("nav button").addEventListener("click", function () {
+  var body = document.body;
+  var combos = body.className !== "combo-view";
+  body.className = combos ? "combo-view" : "";
+  this.textContent = combos ? "Layout" : "Combos";
+});
+document.querySelector("nav").addEventListener("click", function (e) {
+  var tab = e.target;
+  if (tab.tagName !== "A") return;
+  e.preventDefault();
+  var id = tab.getAttribute("href").slice(1);
+  var all = document.querySelectorAll("nav a, section");
+  for (var i = 0; i < all.length; i++) {
+    all[i].className = (all[i] === tab || all[i].id === id) ? "on" : "";
+  }
+});
+</script>
 </body>
 </html>

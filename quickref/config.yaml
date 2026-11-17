@@ -1,21 +1,25 @@
 draw_config:
   key_w: 60.0
   key_h: 56.0
+  outer_pad_w: 50.0
   append_colon_to_layer_header: false
   shrink_wide_legends: 6
   svg_extra_style: |
     svg.keymap { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; }
-    rect.key { fill: #fdfdfd; stroke: #b8b8b8; }
+    rect.key { fill: #fff; stroke: #999; stroke-width: 1.2; }
     rect.held { fill: #fdd; }
-    text.hold { fill: #555; font-style: italic; }
-    text.label { font-size: 20px; }
-    rect.key.shift { fill: #fff6c4; }
-    rect.key.ctrl { fill: #e4f7d4; }
-    rect.key.alt { fill: #d9f1fb; }
-    rect.key.cmd { fill: #fde3e8; }
-    rect.key.layer { fill: #efe6fb; }
+    text.hold { fill: #333; font-style: italic; font-weight: bold; }
+    text.grid { fill: #b0b0b0; font-size: 15px; text-anchor: middle; }
+    rect.key.shift { fill: #fff7b8; stroke: #d8b830; }
+    rect.key.ctrl { fill: #e8fbd2; stroke: #8cbf5a; }
+    rect.key.alt { fill: #d6f3ff; stroke: #5aa8d0; }
+    rect.key.cmd { fill: #ffe2ea; stroke: #e0607a; }
+    rect.key.layer { fill: #f3eaff; stroke: #9a7fd0; }
+    rect.key.lock { fill: #ffe9d9; stroke: #e0704f; }
+    rect.key.magic { fill: #e2e2e2; stroke: #888; }
+    rect.key.none { fill: #dcdcdc; stroke: #c4c4c4; }
+    rect.key.trans { fill: #f6f6f6; stroke: #ccc; }
     rect.key.sticky { fill: #fde9d6; }
-    rect.combo { fill: #e8f0fe; }
 parse_config:
   sticky_label: sticky
   trans_legend: {t: ▽, type: trans}
