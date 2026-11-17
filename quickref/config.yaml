@@ -1,0 +1,192 @@
+draw_config:
+  key_w: 60.0
+  key_h: 56.0
+  append_colon_to_layer_header: false
+  shrink_wide_legends: 6
+  svg_extra_style: |
+    svg.keymap { font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 13px; }
+    rect.key { fill: #fdfdfd; stroke: #b8b8b8; }
+    rect.held { fill: #fdd; }
+    text.hold { fill: #555; font-style: italic; }
+    text.label { font-size: 20px; }
+    rect.key.shift { fill: #fff6c4; }
+    rect.key.ctrl { fill: #e4f7d4; }
+    rect.key.alt { fill: #d9f1fb; }
+    rect.key.cmd { fill: #fde3e8; }
+    rect.key.layer { fill: #efe6fb; }
+    rect.key.sticky { fill: #fde9d6; }
+    rect.combo { fill: #e8f0fe; }
+parse_config:
+  sticky_label: sticky
+  trans_legend: {t: ▽, type: trans}
+  modifier_fn_map:
+    left_ctrl: ⌃
+    right_ctrl: ⌃
+    left_shift: ⇧
+    right_shift: ⇧
+    left_alt: ⌥
+    right_alt: ⌥
+    left_gui: ⌘
+    right_gui: ⌘
+    keycode_combiner: '{mods}{key}'
+    mod_combiner: '{mod_1}{mod_2}'
+    special_combinations:
+      left_ctrl+left_alt+left_gui+left_shift: Hyper
+      left_ctrl+left_alt+left_shift: Meh
+  zmk_keycode_map:
+    EXCLAMATION: '!'
+    EXCL: '!'
+    AT_SIGN: '@'
+    AT: '@'
+    HASH: '#'
+    POUND: '#'
+    DOLLAR: $
+    DLLR: $
+    PERCENT: '%'
+    PRCNT: '%'
+    CARET: ^
+    AMPERSAND: '&'
+    AMPS: '&'
+    ASTERISK: '*'
+    ASTRK: '*'
+    STAR: '*'
+    LEFT_PARENTHESIS: (
+    LPAR: (
+    RIGHT_PARENTHESIS: )
+    RPAR: )
+    PLUS: +
+    UNDERSCORE: _
+    UNDER: _
+    QUESTION: '?'
+    QMARK: '?'
+    PIPE: '|'
+    PIPE2: '|'
+    COLON: ':'
+    DOUBLE_QUOTES: '"'
+    DQT: '"'
+    LESS_THAN: <
+    LT: <
+    GREATER_THAN: '>'
+    GT: '>'
+    LEFT_BRACE: '{'
+    LBRC: '{'
+    RIGHT_BRACE: '}'
+    RBRC: '}'
+    TILDE: '~'
+    TILDE2: '~'
+    NON_US_HASH: '#'
+    NUHS: '#'
+    NON_US_BACKSLASH: \
+    NON_US_BSLH: '|'
+    N1: {t: '1', s: '!'}
+    N2: {t: '2', s: '@'}
+    N3: {t: '3', s: '#'}
+    N4: {t: '4', s: $}
+    N5: {t: '5', s: '%'}
+    N6: {t: '6', s: ^}
+    N7: {t: '7', s: '&'}
+    N8: {t: '8', s: '*'}
+    N9: {t: '9', s: (}
+    N0: {t: '0', s: )}
+    NUMBER_1: {t: '1', s: '!'}
+    NUMBER_2: {t: '2', s: '@'}
+    NUMBER_3: {t: '3', s: '#'}
+    NUMBER_4: {t: '4', s: $}
+    NUMBER_5: {t: '5', s: '%'}
+    NUMBER_6: {t: '6', s: ^}
+    NUMBER_7: {t: '7', s: '&'}
+    NUMBER_8: {t: '8', s: '*'}
+    NUMBER_9: {t: '9', s: (}
+    NUMBER_0: {t: '0', s: )}
+    MINUS: {t: '-', s: _}
+    EQUAL: {t: '=', s: +}
+    SLASH: {t: /, s: '?'}
+    FSLH: {t: /, s: '?'}
+    BACKSLASH: {t: \, s: '|'}
+    BSLH: {t: \, s: '|'}
+    SEMICOLON: {t: ;, s: ':'}
+    SEMI: {t: ;, s: ':'}
+    SINGLE_QUOTE: {t: '''', s: '"'}
+    SQT: {t: '''', s: '"'}
+    APOSTROPHE: {t: '''', s: '"'}
+    APOS: {t: '''', s: '"'}
+    COMMA: {t: ',', s: <}
+    PERIOD: {t: ., s: '>'}
+    DOT: {t: ., s: '>'}
+    LEFT_BRACKET: {t: '[', s: '{'}
+    LBKT: {t: '[', s: '{'}
+    RIGHT_BRACKET: {t: ']', s: '}'}
+    RBKT: {t: ']', s: '}'}
+    GRAVE: {t: '`', s: '~'}
+    LSHFT: {t: Shift, type: shift}
+    RSHFT: {t: Shift, type: shift}
+    LSFT: {t: Shift, type: shift}
+    RSFT: {t: Shift, type: shift}
+    LSHIFT: {t: Shift, type: shift}
+    LCTL: {t: Ctrl, type: ctrl}
+    RCTL: {t: Ctrl, type: ctrl}
+    LALT: {t: Alt, type: alt}
+    RALT: {t: AltGr, type: alt}
+    LGUI: {t: Cmd, type: cmd}
+    RGUI: {t: Cmd, type: cmd}
+    GLOBE: Globe
+    SPACE: Space
+    SPC: Space
+    ENTER: Enter
+    RET: Enter
+    BSPC: ⌫
+    BACKSPACE: ⌫
+    DEL: ⌦
+    DELETE: ⌦
+    ESC: Esc
+    ESCAPE: Esc
+    TAB: Tab
+    INS: Ins
+    INSERT: Ins
+    LEFT: ←
+    RIGHT: →
+    UP: ↑
+    DOWN: ↓
+    HOME: Home
+    END: End
+    PG_UP: PgUp
+    PG_DN: PgDn
+    PAGE_UP: PgUp
+    PAGE_DOWN: PgDn
+    CAPS: Caps
+    CAPSLOCK: Caps
+    PSCRN: PrtSc
+    PRINTSCREEN: PrtSc
+    K_APP: Menu
+    C_VOL_UP: Vol+
+    C_VOL_DN: Vol−
+    C_MUTE: Mute
+    C_PP: ⏯
+    C_NEXT: ⏭
+    C_PREV: ⏮
+    C_BRI_UP: Bri+
+    C_BRI_DN: Bri−
+  raw_binding_map:
+    '&left_pinky_hold LCTL': {t: Ctrl, type: ctrl}
+    '&right_pinky_hold LCTL': {t: Ctrl, type: ctrl}
+    '&left_ringy_hold LALT': {t: Alt, type: alt}
+    '&right_ringy_hold LALT': {t: Alt, type: alt}
+    '&left_middy_hold LGUI': {t: Cmd, type: cmd}
+    '&right_middy_hold LGUI': {t: Cmd, type: cmd}
+    '&left_index_hold LSFT': {t: Shift, type: shift}
+    '&right_index_hold LSFT': {t: Shift, type: shift}
+    '&left_pinky_tap': {t: tap, type: trans}
+    '&left_ringy_tap': {t: tap, type: trans}
+    '&left_middy_tap': {t: tap, type: trans}
+    '&left_index_tap': {t: tap, type: trans}
+    '&right_pinky_tap': {t: tap, type: trans}
+    '&right_ringy_tap': {t: tap, type: trans}
+    '&right_middy_tap': {t: tap, type: trans}
+    '&right_index_tap': {t: tap, type: trans}
+    '&select_word_right': Sel word →
+    '&select_word_left': Sel word ←
+    '&select_line_right': Sel line →
+    '&select_line_left': Sel line ←
+    '&mod_tab_chord LGUI 16': ⌘Tab
+    '&mod_tab_chord LALT 16': ⌥Tab
+    '&mod_tab_chord LCTL 16': ⌃Tab
