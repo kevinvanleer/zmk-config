@@ -11,8 +11,13 @@ KEY_NAMES = {
     "insert": "Ins", "up": "↑", "down": "↓", "left": "←", "right": "→",
 }
 ARROWS = {"north": "↑", "south": "↓", "west": "←", "east": "→"}
-EDGES = {("top", "-"): "↑", ("top", "+"): "↓", ("bottom", "-"): "↑", ("bottom", "+"): "↓",
-         ("left", "-"): "←", ("left", "+"): "→", ("right", "-"): "←", ("right", "+"): "→"}
+EDGES = {"top": ("↑", "-"), "bottom": ("↓", "+"), "left": ("←", "-"), "right": ("→", "+")}
+
+
+def resize(edge, dx, dy):
+    arrow, outward = EDGES[edge]
+    moved = "-" if "-" in dx + dy else "+"
+    return f"{'Grow' if moved == outward else 'Shrink'}\n{arrow}"
 
 LABELS = [
     (r"window --close", lambda m: "Close"),
@@ -28,7 +33,7 @@ LABELS = [
     (r"space --mirror y-axis", lambda m: "Flip\n↔"),
     (r"space --mirror x-axis", lambda m: "Flip\n↕"),
     (r"window --resize (\w+):([-+]?\d+):([-+]?\d+)",
-     lambda m: f"{m[1].title()}\n{EDGES[(m[1], '-' if '-' in m[2] + m[3] else '+')]}"),
+     lambda m: resize(m[1], m[2], m[3])),
     (r"window --display (\w+)", lambda m: f"→Disp\n{m[1]}"),
     (r"space --display (\w+)", lambda m: f"Spc→\ndisp {m[1]}"),
     (r"display --focus (\w+)", lambda m: f"Disp\n{m[1]}"),
@@ -136,7 +141,8 @@ if __name__ == "__main__":
         (frozenset({"ctrl"}), "=", "yabai -m space --create &&      yabai -m space --focus 3"),
         (frozenset(), "Menu", "yabai -m display --focus recent"),
     ], parse(sample)
-    assert [label(c) for _, _, c in parse(sample)] == ["Focus\n↑", "Left\n←", "New\nspace", "Disp\nrecent"]
+    assert [label(c) for _, _, c in parse(sample)] == ["Focus\n↑", "Grow\n←", "New\nspace", "Disp\nrecent"]
+    assert label("yabai -m window --resize bottom:0:-20") == "Shrink\n↓"
     tabs, others = layers(sample.replace("alt + shift - 0x2B", "alt - 0x2B") + "alt - q : yabai -m window --close\n")
     assert [name for name, _, _ in tabs] == ["skhd ⌥"], tabs
     assert others == ["Menu: Disp recent", "⌃=: New space"], others
