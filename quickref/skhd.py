@@ -21,12 +21,12 @@ def resize(edge, dx, dy):
 
 LABELS = [
     (r"window --close", lambda m: "Close"),
-    (r"space --create .*window --space", lambda m: "Mv\nwnd\nnew"),
-    (r"--label ANCHOR", lambda m: "New spc\nhere"),
+    (r"space --create .*window --space", lambda m: "MV\nWND\nnew"),
+    (r"--label ANCHOR", lambda m: "New SPC\nhere"),
     (r"space --create", lambda m: "New\nspace"),
     (r"--label DESTROY", lambda m: "Kill\nspace"),
     (r"window --focus (north|south|west|east)", lambda m: f"Focus\n{ARROWS[m[1]]}"),
-    (r"window --focus (prev|next)", lambda m: f"Win\n{m[1]}"),
+    (r"window --focus (prev|next)", lambda m: f"WIN\n{m[1]}"),
     (r"window --swap (\w+)", lambda m: f"Swap\n{ARROWS[m[1]]}"),
     (r"space --rotate 90", lambda m: "Rotate\n↻"),
     (r"space --rotate 270", lambda m: "Rotate\n↺"),
@@ -34,20 +34,20 @@ LABELS = [
     (r"space --mirror x-axis", lambda m: "Flip\n↕"),
     (r"window --resize (\w+):([-+]?\d+):([-+]?\d+)",
      lambda m: resize(m[1], m[2], m[3])),
-    (r"window --display (\w+)", lambda m: f"Mv\n→disp\n{m[1]}"),
-    (r"space --display (\w+)", lambda m: f"Spc→\ndisp {m[1]}"),
-    (r"display --focus (\w+)", lambda m: f"Disp\n{m[1]}"),
-    (r"window --space (\w+)", lambda m: f"Mv\nwnd\n{m[1].lower()}"),
-    (r"space --swap (\w+)", lambda m: f"Swap\nspc {m[1].lower()}"),
+    (r"window --display (\w+)", lambda m: f"MV\n→DISP\n{m[1]}"),
+    (r"space --display (\w+)", lambda m: f"SPC→\nDISP {m[1]}"),
+    (r"display --focus (\w+)", lambda m: f"DISP\n{m[1]}"),
+    (r"window --space (\w+)", lambda m: f"MV\nWND\n{m[1].lower()}"),
+    (r"space --swap (\w+)", lambda m: f"Swap\nSPC {m[1].lower()}"),
     (r"space --label (\w+)", lambda m: f"Mark\n{m[1].lower()}"),
-    (r"--display 2 .*\[(\d+)\]", lambda m: f"D2\nspc {int(m[1]) + 1}"),
+    (r"--display 2 .*\[(\d+)\]", lambda m: f"D2\nSPC {int(m[1]) + 1}"),
     (r"space --focus (\w+)", lambda m: f"Space\n{m[1].lower()}"),
     (r"space --balance", lambda m: "Balance"),
     (r"--grid 1:1:0:0:1:1", lambda m: "Max"),
     (r"--grid 1:2:0:0:1:1", lambda m: "Left\nhalf"),
     (r"toggle float", lambda m: "Float"),
-    (r"toggle pip", lambda m: "PiP"),
-    (r"--incognito", lambda m: "Incog"),
+    (r"toggle pip", lambda m: "PIP"),
+    (r"--incognito", lambda m: "INCOG"),
     (r"Google Chrome", lambda m: "Chrome"),
     (r"Ghostty", lambda m: "Ghostty"),
     (r"^neovide", lambda m: "Neovide"),
@@ -141,9 +141,9 @@ if __name__ == "__main__":
         (frozenset({"ctrl"}), "=", "yabai -m space --create &&      yabai -m space --focus 3"),
         (frozenset(), "Menu", "yabai -m display --focus recent"),
     ], parse(sample)
-    assert [label(c) for _, _, c in parse(sample)] == ["Focus\n↑", "Grow\n←", "New\nspace", "Disp\nrecent"]
+    assert [label(c) for _, _, c in parse(sample)] == ["Focus\n↑", "Grow\n←", "New\nspace", "DISP\nrecent"]
     assert label("yabai -m window --resize bottom:0:-20") == "Shrink\n↓"
     tabs, others = layers(sample.replace("alt + shift - 0x2B", "alt - 0x2B") + "alt - q : yabai -m window --close\n")
     assert [name for name, _, _ in tabs] == ["skhd ⌥"], tabs
-    assert others == ["Menu: Disp recent", "⌃=: New space"], others
+    assert others == ["Menu: DISP recent", "⌃=: New space"], others
     print("ok")
