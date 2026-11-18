@@ -29,11 +29,14 @@ nav button { margin: 3px; padding: 8px 14px; border: 0; border-radius: 6px; font
 #extra a { display: none; }
 #extra a.on, nav.expanded #extra a { display: inline-block; }
 nav.expanded #extra { display: block; border-top: 1px solid #ddd; margin-top: 4px; padding-top: 4px; }
+#tip { display: none; position: fixed; left: 12px; right: 12px; bottom: 12px; padding: 10px 14px; border-radius: 8px; background: #335; color: #fff; font: 15px Menlo, monospace; word-break: break-word; }
+#tip.on { display: block; }
 </style>
 </head>
 <body>
 <nav><button type="button" id="view">Combos</button>{{pinned}}<button type="button" id="more">More ▾</button><span id="extra">{{extra}}</span></nav>
 <main>{{sections}}</main>
+<div id="tip"></div>
 <script>
 var nav = document.querySelector("nav");
 var more = document.getElementById("more");
@@ -66,6 +69,11 @@ function cycleKey(key, pos) {
   }
   for (i = 0; i < length; i++) marks[i].parentNode.replaceChild(nodes[(i + 1) % length], marks[i]);
 }
+var tip = document.getElementById("tip");
+function showTip(text) {
+  tip.textContent = text || "";
+  tip.className = text ? "on" : "";
+}
 var base = document.querySelector("section[data-hold]");
 var held = {};
 var MODS = ["cmd", "alt", "ctrl", "shift"];
@@ -83,6 +91,7 @@ function show(id) {
   }
   showCombos(false);
   expand(false);
+  showTip(null);
 }
 function markHeld() {
   var keys = base.querySelectorAll("section > svg g[class*=keypos-] > rect");
@@ -100,12 +109,16 @@ function toggleHold(mod) {
   show(target ? target.id : base.id);
 }
 document.querySelector("main").addEventListener("click", function (e) {
+  var shown = tip.textContent;
+  showTip(null);
   for (var node = e.target; node && node.getAttribute; node = node.parentNode) {
     var pos = (node.getAttribute("class") || "").match(/keypos-(\d+)/);
     if (!pos) continue;
     var section = document.querySelector("section.on");
     var link = (" " + section.getAttribute("data-goto") + " ").match(new RegExp(" " + pos[1] + ":([\\w-]+) "));
     if (link) return openLayer(link[1]);
+    var tips = JSON.parse(section.getAttribute("data-tips") || "{}");
+    if (tips[pos[1]]) return showTip(shown === tips[pos[1]] ? null : tips[pos[1]]);
     var mod = holdMod(pos[1]);
     if (mod && (section === base || section.getAttribute("data-chord") !== null)) return toggleHold(mod);
     return cycleKey(node, pos[1]);

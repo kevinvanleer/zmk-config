@@ -1,4 +1,5 @@
 import html
+import json
 import math
 import os
 import re
@@ -361,14 +362,23 @@ def add_skhd_layers(layers, base, attrs):
         print(f"no skhd config at {SKHDRC}, skipping skhd layers", file=sys.stderr)
         return {}
     with open(SKHDRC) as f:
-        tabs, others = skhd.layers(f.read())
+        text = f.read()
+    tabs, others = skhd.layers(text)
+    commands = {(mods, key): command for mods, key, command in skhd.parse(text)}
     base_keys = layers[base]
     on_base = {legend(k) for k in base_keys}
     attrs[base] = f' data-hold="{hold_positions(base_keys)}"'
     notes = {}
     for name, mods, bindings in tabs:
         layers[name] = skhd_layer(base_keys, mods, bindings)
-        attrs[name] = f' data-chord="{" ".join(m for m in HOLD_NAMES if m in mods)}"'
+        tips = {
+            pos: f"{skhd.chord_name(mods)}{legend(key)} : {commands[(mods, legend(key))]}"
+            for pos, key in enumerate(base_keys) if legend(key) in bindings
+        }
+        attrs[name] = (
+            f' data-chord="{" ".join(m for m in HOLD_NAMES if m in mods)}"'
+            f' data-tips="{html.escape(json.dumps(tips))}"'
+        )
         notes[name] = [f"{skhd.chord_name(mods)}{k}: {v}".replace("\n", " ") for k, v in bindings.items() if k not in on_base]
     if tabs and others:
         notes[tabs[-1][0]].append("Also " + " · ".join(others))
