@@ -21,7 +21,7 @@ def resize(edge, dx, dy):
 
 LABELS = [
     (r"window --close", lambda m: "Close"),
-    (r"space --create .*window --space", lambda m: "→Spc\nnew"),
+    (r"space --create .*window --space", lambda m: "Win\n→spc\nnew"),
     (r"--label ANCHOR", lambda m: "New spc\nhere"),
     (r"space --create", lambda m: "New\nspace"),
     (r"--label DESTROY", lambda m: "Kill\nspace"),
@@ -34,10 +34,10 @@ LABELS = [
     (r"space --mirror x-axis", lambda m: "Flip\n↕"),
     (r"window --resize (\w+):([-+]?\d+):([-+]?\d+)",
      lambda m: resize(m[1], m[2], m[3])),
-    (r"window --display (\w+)", lambda m: f"→Disp\n{m[1]}"),
+    (r"window --display (\w+)", lambda m: f"Win\n→disp\n{m[1]}"),
     (r"space --display (\w+)", lambda m: f"Spc→\ndisp {m[1]}"),
     (r"display --focus (\w+)", lambda m: f"Disp\n{m[1]}"),
-    (r"window --space (\w+)", lambda m: f"→Spc\n{m[1].lower()}"),
+    (r"window --space (\w+)", lambda m: f"Win\n→spc\n{m[1].lower()}"),
     (r"space --swap (\w+)", lambda m: f"Swap\nspc {m[1].lower()}"),
     (r"space --label (\w+)", lambda m: f"Mark\n{m[1].lower()}"),
     (r"--display 2 .*\[(\d+)\]", lambda m: f"D2\nspc {int(m[1]) + 1}"),
