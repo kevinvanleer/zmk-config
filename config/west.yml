@@ -1,13 +1,11 @@
 manifest:
   remotes:
-    - name: zmkfirmware
-      url-base: https://github.com/moergo-sc
-    # Additional modules containing boards/shields/custom code can be listed here as well
-    # See https://docs.zephyrproject.org/3.2.0/develop/west/manifest.html#projects
+    - name: darknao
+      url-base: https://github.com/darknao
   projects:
     - name: zmk
-      remote: zmkfirmware
-      revision: main
+      remote: darknao
+      revision: 22d6941d055bf05f006c9d4d7088e9564d31ba3a
       import: app/west.yml
   self:
     path: config
