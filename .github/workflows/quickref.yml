@@ -2,7 +2,7 @@ name: Layer quick reference
 on:
   push:
     branches: [main]
-    paths: [quickref/**, .github/workflows/quickref.yml]
+    paths: [quickref/**, config/glove80.keymap, .github/workflows/quickref.yml]
   schedule:
     - cron: "17 9 * * *"
   workflow_dispatch:

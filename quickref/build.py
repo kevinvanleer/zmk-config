@@ -386,7 +386,7 @@ def add_skhd_layers(layers, base, attrs):
 
 
 def main(out_path):
-    with open(os.path.join(HERE, "glove80.keymap")) as f:
+    with open(os.path.join(HERE, "..", "config", "glove80.keymap")) as f:
         source = FINGER_TAP.sub("&kp", f.read())
     parsed = yaml.safe_load(keymap("parse", "-z", "-", stdin=source))
     parsed["layout"] = {"qmk_keyboard": "glove80"}
