@@ -68,32 +68,31 @@
 #define LAYER_Engram 3
 #define LAYER_Dvorak 4
 #define LAYER_ColemakDH 5
-#define LAYER_Canary 6
-#define LAYER_Typing 7
-#define LAYER_LeftPinky 8
-#define LAYER_LeftRingy 9
-#define LAYER_LeftMiddy 10
-#define LAYER_LeftIndex 11
-#define LAYER_RightPinky 12
-#define LAYER_RightRingy 13
-#define LAYER_RightMiddy 14
-#define LAYER_RightIndex 15
-#define LAYER_Cursor 16
-#define LAYER_Number 17
-#define LAYER_Function 18
-#define LAYER_Emoji 19
-#define LAYER_World 20
-#define LAYER_Symbol 21
-#define LAYER_System 22
-#define LAYER_Mouse 23
-#define LAYER_MouseSlow 24
-#define LAYER_MouseFast 25
-#define LAYER_MouseWarp 26
-#define LAYER_Gaming 27
-#define LAYER_Factory 28
-#define LAYER_Lower 29
-#define LAYER_Magic 30
-#define LAYER_CAD 31
+#define LAYER_Typing 6
+#define LAYER_LeftPinky 7
+#define LAYER_LeftRingy 8
+#define LAYER_LeftMiddy 9
+#define LAYER_LeftIndex 10
+#define LAYER_RightPinky 11
+#define LAYER_RightRingy 12
+#define LAYER_RightMiddy 13
+#define LAYER_RightIndex 14
+#define LAYER_Cursor 15
+#define LAYER_Number 16
+#define LAYER_Function 17
+#define LAYER_Emoji 18
+#define LAYER_World 19
+#define LAYER_Symbol 20
+#define LAYER_System 21
+#define LAYER_Mouse 22
+#define LAYER_MouseSlow 23
+#define LAYER_MouseFast 24
+#define LAYER_MouseWarp 25
+#define LAYER_Gaming 26
+#define LAYER_Factory 27
+#define LAYER_Lower 28
+#define LAYER_Magic 29
+#define LAYER_CAD 30
 
 /* To deal with the situation where there is no Lower layer, to keep &lower happy */
 #ifndef LAYER_Lower
@@ -1561,88 +1560,6 @@
 #define KEY_RH_C5R6 PG_DN
 #define KEY_RH_C6R6 0
 #endif
-#if defined(LAYER_Canary) && LAYER_Canary == 0
-#define KEY_LH_C6R1 0
-#define KEY_LH_C5R1 0
-#define KEY_LH_C4R1 0
-#define KEY_LH_C3R1 0
-#define KEY_LH_C2R1 0
-#define KEY_RH_C2R1 0
-#define KEY_RH_C3R1 0
-#define KEY_RH_C4R1 0
-#define KEY_RH_C5R1 0
-#define KEY_RH_C6R1 0
-#define KEY_LH_C6R2 0
-#define KEY_LH_C5R2 N1
-#define KEY_LH_C4R2 N2
-#define KEY_LH_C3R2 N3
-#define KEY_LH_C2R2 N4
-#define KEY_LH_C1R2 N5
-#define KEY_RH_C1R2 N6
-#define KEY_RH_C2R2 N7
-#define KEY_RH_C3R2 N8
-#define KEY_RH_C4R2 N9
-#define KEY_RH_C5R2 N0
-#define KEY_RH_C6R2 0
-#define KEY_LH_C6R3 0
-#define KEY_LH_C5R3 W
-#define KEY_LH_C4R3 L
-#define KEY_LH_C3R3 Y
-#define KEY_LH_C2R3 P
-#define KEY_LH_C1R3 B
-#define KEY_RH_C1R3 Z
-#define KEY_RH_C2R3 F
-#define KEY_RH_C3R3 O
-#define KEY_RH_C4R3 U
-#define KEY_RH_C5R3 SQT
-#define KEY_RH_C6R3 MINUS
-#define KEY_LH_C6R4 EQUAL
-#define KEY_LH_C5R4 C
-#define KEY_LH_C4R4 R
-#define KEY_LH_C3R4 S
-#define KEY_LH_C2R4 T
-#define KEY_LH_C1R4 G
-#define KEY_RH_C1R4 M
-#define KEY_RH_C2R4 N
-#define KEY_RH_C3R4 E
-#define KEY_RH_C4R4 I
-#define KEY_RH_C5R4 A
-#define KEY_RH_C6R4 SEMI
-#define KEY_LH_C6R5 0
-#define KEY_LH_C5R5 Q
-#define KEY_LH_C4R5 J
-#define KEY_LH_C3R5 V
-#define KEY_LH_C2R5 D
-#define KEY_LH_C1R5 K
-#define KEY_LH_T1 ESC
-#define KEY_LH_T2 LBKT
-#define KEY_LH_T3 RBKT
-#define KEY_RH_T3 _HOME
-#define KEY_RH_T2 _END
-#define KEY_RH_T1 ENTER
-#define KEY_RH_C1R5 X
-#define KEY_RH_C2R5 H
-#define KEY_RH_C3R5 FSLH
-#define KEY_RH_C4R5 COMMA
-#define KEY_RH_C5R5 DOT
-#define KEY_RH_C6R5 0
-#define KEY_LH_C6R6 0
-#define KEY_LH_C5R6 BSLH
-#define KEY_LH_C4R6 LPAR
-#define KEY_LH_C3R6 RPAR
-#define KEY_LH_C2R6 GRAVE
-#define KEY_LH_T4 BACKSPACE
-#define KEY_LH_T5 DELETE
-#define KEY_LH_T6 INSERT
-#define KEY_RH_T6 0
-#define KEY_RH_T5 TAB
-#define KEY_RH_T4 SPACE
-#define KEY_RH_C2R6 PAGE_UP
-#define KEY_RH_C3R6 0
-#define KEY_RH_C4R6 0
-#define KEY_RH_C5R6 PG_DN
-#define KEY_RH_C6R6 0
-#endif
 
 combos {
   compatible = "zmk,combos";
@@ -1661,14 +1578,14 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T2 POS_LH_T3>;
     bindings = <&sk _GLOBE>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   combo_sticky_globe_right {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T2 POS_RH_T3>;
     bindings = <&sk _GLOBE>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // T1+T2
@@ -1677,14 +1594,14 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T1 POS_LH_T2>;
     bindings = <&sk RALT>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   combo_sticky_ralt_right {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T1 POS_RH_T2>;
     bindings = <&sk RALT>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // T2+T5
@@ -1693,7 +1610,7 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T2 POS_LH_T5>;
     bindings = <&mod_tab_chord _A_TAB LAYER_Cursor>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
   #endif
 
@@ -1701,7 +1618,7 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T2 POS_RH_T5>;
     bindings = <&kp LG(LA(LC(LSHFT)))>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // T3+T6
@@ -1710,7 +1627,7 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T3 POS_LH_T6>;
     bindings = <&mod_tab_chord _G_TAB LAYER_Cursor>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
   #endif
 
@@ -1718,7 +1635,7 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T3 POS_RH_T6>;
     bindings = <&kp LC(LSHFT)>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // T5+T6
@@ -1727,14 +1644,14 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T5 POS_LH_T6>;
     bindings = <&mod_tab_chord LCTL LAYER_Cursor>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   combo_meh_right {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T5 POS_RH_T6>;
     bindings = <&kp LA(LC(LSHFT))>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // T1+T4
@@ -1743,14 +1660,14 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T1 POS_LH_T4>;
     bindings = <&sticky_key_modtap LSFT LSFT>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   combo_sticky_shift_right {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T1 POS_RH_T4>;
     bindings = <&sticky_key_modtap RSFT RSFT>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // T4+T5
@@ -1759,14 +1676,14 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T4 POS_LH_T5>;
     bindings = <&caps_word>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   combo_caps_word_right {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T4 POS_RH_T5>;
     bindings = <&caps_word>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // T1+T5
@@ -1775,14 +1692,14 @@ combos {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_LH_T1 POS_LH_T5>;
     bindings = <&kp CAPSLOCK>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   combo_caps_lock_right {
     timeout-ms = <COMBO_FIRING_DECAY>;
     key-positions = <POS_RH_T1 POS_RH_T5>;
     bindings = <&kp CAPSLOCK>;
-    layers = <0 1 2 3 4 5 6 7 8>;
+    layers = <0 1 2 3 4 5 6 7>;
   };
 
   // C1R5+C2R6
@@ -11356,16 +11273,6 @@ UNICODE_MORPH_MODS
             >;
         };
 
-        layer_Canary {
-            bindings = <
-                &none                         &none                         &none                         &none                         &none                                                                                                                                                                                                      &none                          &none                          &none                          &none                 &none
-                &none                        &kp N1                        &kp N2                        &kp N3                        &kp N4  &kp N5                                                                                                                                                              &kp N6                         &kp N7                         &kp N8                         &kp N9                         &kp N0                 &none
-                &none                         &kp W                         &kp L                         &kp Y                         &kp P   &kp B                                                                                                                                                               &kp Z                          &kp F                          &kp O                          &kp U                        &kp SQT             &kp MINUS
-            &kp EQUAL  &LeftPinky (C, LAYER_Canary)  &LeftRingy (R, LAYER_Canary)  &LeftMiddy (S, LAYER_Canary)  &LeftIndex (T, LAYER_Canary)   &kp G                                                                                                                                                               &kp M  &RightIndex (N, LAYER_Canary)  &RightMiddy (E, LAYER_Canary)  &RightRingy (I, LAYER_Canary)  &RightPinky (A, LAYER_Canary)              &kp SEMI
-      &mo LAYER_Lower                         &kp Q                         &kp J                         &kp V                         &kp D   &kp K      &thumb LAYER_Function ESC                    &kp LBKT                    &kp RBKT         &kp _HOME                &kp _END  &thumb LAYER_System ENTER   &kp X                          &kp H                       &kp FSLH                      &kp COMMA                        &kp DOT       &mo LAYER_Lower
- &magic LAYER_Magic 0                      &kp BSLH                  &parang_left                 &parang_right      &thumb LAYER_Emoji GRAVE          &thumb LAYER_Cursor BACKSPACE  &thumb LAYER_Number DELETE  &thumb LAYER_Typing INSERT  &mo LAYER_Typing  &thumb LAYER_Mouse TAB  &space LAYER_Symbol SPACE             &thumb LAYER_World PAGE_UP                   &msc SCRL_UP                 &msc SCRL_DOWN                      &kp PG_DN  &magic LAYER_Magic 0
-            >;
-        };
 
         layer_Typing {
             bindings = <
@@ -11623,7 +11530,7 @@ UNICODE_MORPH_MODS
         layer_Magic {
             bindings = <
   &bt BT_CLR            &none            &none            &none            &none                                                                                        &none   &none   &none   &none  &bt BT_CLR_ALL
-       &to 0            &to 1            &to 2            &to 3            &to 4            &to 5                                                               &to 6   &to 7   &none   &none   &none           &none
+       &to 0            &to 1            &to 2            &to 3            &to 4            &to 5                                                               &none   &to 6   &none   &none   &none           &none
        &none  &rgb_ug RGB_SPI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_BRI  &rgb_ug RGB_TOG                                                               &none   &none   &none   &none   &none           &none
  &bootloader  &rgb_ug RGB_SPD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_BRD  &rgb_ug RGB_EFF                                                               &none   &none   &none   &none   &none     &bootloader
   &sys_reset            &none            &none            &none            &none            &none   &bt_2   &bt_3  &tog LAYER_Factory   &none   &none   &none   &none   &none   &none   &none   &none      &sys_reset
