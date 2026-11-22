@@ -446,8 +446,8 @@
           ___ ___ ___ ___ ___ ___                                     ___ ___ ___ ___ ___ ___
           ___ ___ SPG AZU SPG ___                                     ___ YLW GRN CYN MAJ ___
           ___ SPG AZU AZU AZU SPG                                     SPG FST WRP SLO GDN GDN
-          ___ SPG SLO WRP FST SPG     GDN PUR GDN     ___ ___ BLU     SPG SPG AZU SPG GDN GDN
-          ___ ___ ___ ___ ___         GDN GDN GDN     BLU RED BLU         AZU AZU AZU GDN PUR
+          ___ SPG SLO WRP FST SPG     GDN PUR GDN     ___ RED BLU     SPG SPG AZU SPG GDN GDN
+          ___ ___ ___ ___ ___         GDN GDN GDN     BLU ___ BLU         AZU AZU AZU GDN PUR
         >;
         layer-id = <LAYER_Mouse>;
       };
@@ -599,8 +599,8 @@
           ___ CYN CYN CYN CYN CYN                                     CYN CYN CYN CYN ___ ___
           BLU BLU GRN BLU BLU BLU                                     ___ ___ ___ ___ ___ ___
           ___ GRN GRN GRN BLU BLU                                     ___ ___ ___ ___ ___ ___
-          ___ BLU BLU BLU BLU BLU     ___ ___ ___     ___ WHT ___     ___ ___ ___ ___ ___ ___
-          ___ ___ ___ ___ ___         ___ ___ ___     ___ ___ ___         ___ ___ ___ ___ ___
+          ___ BLU BLU BLU BLU BLU     ___ ___ ___     ___ ___ ___     ___ ___ ___ ___ ___ ___
+          ___ ___ ___ ___ ___         ___ ___ ___     ___ WHT ___         ___ ___ ___ ___ ___
         >;
         layer-id = <LAYER_Cmux>;
       };
@@ -11227,8 +11227,8 @@ UNICODE_MORPH_MODS
      &kp _SCREEN_COPY                        &kp N1                        &kp N2                        &kp N3                        &kp N4  &kp N5                                                                                                                                                                       &kp N6                         &kp N7                         &kp N8                         &kp N9                            &kp N0       &kp _VIM_WINDOW
       &kp _VIM_WINDOW                         &kp Q                         &kp W                         &kp E                         &kp R   &kp T                                                                                                                                                                        &kp Y                          &kp U                          &kp I                          &kp O                             &kp P             &kp MINUS
             &kp EQUAL  &LeftPinky (A, LAYER_QWERTY)  &LeftRingy (S, LAYER_QWERTY)  &LeftMiddy (D, LAYER_QWERTY)  &LeftIndex (F, LAYER_QWERTY)   &kp G                                                                                                                                                                        &kp H  &RightIndex (J, LAYER_QWERTY)  &RightMiddy (K, LAYER_QWERTY)  &RightRingy (L, LAYER_QWERTY)  &RightPinky (SEMI, LAYER_QWERTY)               &kp SQT
-      &mo LAYER_Lower                         &kp Z                         &kp X                         &kp C                         &kp V   &kp B  &thumb LAYER_Function TAB                       &kp LBKT                    &kp RBKT                  &kp _HOME                &thumb LAYER_Cmux _END  &thumb LAYER_System DELETE   &kp N                          &kp M                      &kp COMMA                        &kp DOT                          &kp FSLH       &mo LAYER_Lower
- &magic LAYER_Magic 0                      &kp BSLH                  &parang_left                 &parang_right      &thumb LAYER_Emoji GRAVE          &space LAYER_Cursor SPACE  &thumb LAYER_Number BACKSPACE  &thumb LAYER_Typing INSERT  &thumb LAYER_Typing COLON  &thumb LAYER_Mouse ESC   &thumb LAYER_Symbol ENTER             &thumb LAYER_World PAGE_UP                   &msc SCRL_UP                 &msc SCRL_DOWN                         &kp PG_DN  &magic LAYER_Magic 0
+      &mo LAYER_Lower                         &kp Z                         &kp X                         &kp C                         &kp V   &kp B  &thumb LAYER_Function TAB                       &kp LBKT                    &kp RBKT                  &kp _HOME                &thumb LAYER_Mouse _END  &thumb LAYER_System DELETE   &kp N                          &kp M                      &kp COMMA                        &kp DOT                          &kp FSLH       &mo LAYER_Lower
+ &magic LAYER_Magic 0                      &kp BSLH                  &parang_left                 &parang_right      &thumb LAYER_Emoji GRAVE          &space LAYER_Cursor SPACE  &thumb LAYER_Number BACKSPACE  &thumb LAYER_Typing INSERT  &thumb LAYER_Typing COLON  &thumb LAYER_Cmux ESC   &thumb LAYER_Symbol ENTER             &thumb LAYER_World PAGE_UP                   &msc SCRL_UP                 &msc SCRL_DOWN                         &kp PG_DN  &magic LAYER_Magic 0
             >;
         };
 
@@ -11470,8 +11470,8 @@ UNICODE_MORPH_MODS
   &none           &none                &none                &none                &none           &none                                                                                    &none                &none                &none                &none                &none      &none
   &none           &none       &msc SCRL_LEFT         &mmv MOVE_UP      &msc SCRL_RIGHT           &none                                                                                    &none  &sk RIGHT_INDEX_MOD  &sk RIGHT_MIDDY_MOD  &sk RIGHT_RINGY_MOD  &sk RIGHT_PINKY_MOD      &none
   &none    &msc SCRL_UP       &mmv MOVE_LEFT       &mmv MOVE_DOWN      &mmv MOVE_RIGHT    &msc SCRL_UP                                                                             &msc SCRL_UP  &mo LAYER_MouseFast  &mo LAYER_MouseWarp  &mo LAYER_MouseSlow            &mkp LCLK   &mkp MB4
-  &none  &msc SCRL_DOWN  &mo LAYER_MouseSlow  &mo LAYER_MouseWarp  &mo LAYER_MouseFast  &msc SCRL_DOWN  &mkp MCLK  &kp K_APP  &mkp MB5       &none             &none   &kp _CUT  &msc SCRL_DOWN       &msc SCRL_LEFT         &mmv MOVE_UP      &msc SCRL_RIGHT            &mkp RCLK   &mkp MB5
-  &none           &none                &none                &none                &none                  &mkp LCLK  &mkp RCLK  &mkp MB4  &kp _PASTE  &tog LAYER_Mouse  &kp _COPY                       &mmv MOVE_LEFT       &mmv MOVE_DOWN      &mmv MOVE_RIGHT            &mkp MCLK  &kp K_APP
+  &none  &msc SCRL_DOWN  &mo LAYER_MouseSlow  &mo LAYER_MouseWarp  &mo LAYER_MouseFast  &msc SCRL_DOWN  &mkp MCLK  &kp K_APP  &mkp MB5       &none  &tog LAYER_Mouse   &kp _CUT  &msc SCRL_DOWN       &msc SCRL_LEFT         &mmv MOVE_UP      &msc SCRL_RIGHT            &mkp RCLK   &mkp MB5
+  &none           &none                &none                &none                &none                  &mkp LCLK  &mkp RCLK  &mkp MB4  &kp _PASTE  &none  &kp _COPY                       &mmv MOVE_LEFT       &mmv MOVE_DOWN      &mmv MOVE_RIGHT            &mkp MCLK  &kp K_APP
             >;
         };
 
@@ -11536,8 +11536,8 @@ UNICODE_MORPH_MODS
     &none   &none   &none   &none             &none   &none                                                                                               &kp KP_CLEAR         &kp KP_N7     &kp KP_N8        &kp KP_N9  &kp KP_MINUS         &kp FSLH
     &none   &none   &none   &none             &none   &none                                                                                                &kp KP_LPAR         &kp KP_N4     &kp KP_N5        &kp KP_N6   &kp KP_PLUS  &kp KP_MULTIPLY
     &none   &none   &none   &none             &none   &none                                                                                                &kp KP_RPAR         &kp KP_N1     &kp KP_N2        &kp KP_N3  &kp KP_ENTER     &kp KP_EQUAL
-   &trans   &none   &none   &none             &none   &none  &tog LAYER_Function              &none   &none   &none             &none  &tog LAYER_System     &kp KP_N0         &kp KP_N0  &kp KP_COMMA       &kp KP_DOT  &kp KP_ENTER           &trans
- &kp RALT   &none   &none   &none  &tog LAYER_Emoji            &tog LAYER_Cursor  &tog LAYER_Number   &none   &none  &tog LAYER_Mouse  &tog LAYER_Symbol                &tog LAYER_World         &none            &none         &none            &none
+   &trans   &none   &none   &none             &none   &none  &tog LAYER_Function              &none   &none   &none  &tog LAYER_Mouse  &tog LAYER_System     &kp KP_N0         &kp KP_N0  &kp KP_COMMA       &kp KP_DOT  &kp KP_ENTER           &trans
+ &kp RALT   &none   &none   &none  &tog LAYER_Emoji            &tog LAYER_Cursor  &tog LAYER_Number   &none   &none  &none  &tog LAYER_Symbol                &tog LAYER_World         &none            &none         &none            &none
             >;
         };
 
@@ -11569,8 +11569,8 @@ UNICODE_MORPH_MODS
             &none  &kp LG(LA(N1))  &kp LG(LA(N2))  &kp LG(LA(N3))  &kp LG(LA(N4))  &kp LG(LA(N5))  &kp LG(LA(N6))  &kp LG(LA(N7))  &kp LG(LA(N8))  &kp LG(LA(N9))  &none  &none
             &kp LG(LS(U))  &kp LG(LS(LBKT))  &kp LG(LA(UP))  &kp LG(LS(RBKT))  &kp LC(LG(LBKT))  &kp LG(T)  &none  &none  &none  &none  &none  &none
             &none  &kp LG(LA(LEFT))  &kp LG(LA(DOWN))  &kp LG(LA(RIGHT))  &kp LC(LG(RBKT))  &kp LG(D)  &none  &none  &none  &none  &none  &none
-            &none  &kp LG(LS(RET))  &kp LG(W)  &kp LG(LS(P))  &kp LG(P)  &kp LG(LS(D))  &none  &none  &none  &none  &trans  &none  &none  &none  &none  &none  &none  &none
-            &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none
+            &none  &kp LG(LS(RET))  &kp LG(W)  &kp LG(LS(P))  &kp LG(P)  &kp LG(LS(D))  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none
+            &none  &none  &none  &none  &none  &none  &none  &none  &none  &trans  &none  &none  &none  &none  &none  &none
             >;
         };
 
