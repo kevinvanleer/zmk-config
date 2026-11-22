@@ -330,6 +330,43 @@ def render(parsed, alternates, cycles, notes, attrs):
 
 
 SKHDRC = os.environ.get("SKHDRC") or os.path.expanduser("~/.skhdrc")
+DESCRIBED_LAYERS = {
+    "cmux": {
+        **{f"⌘⌥{n}": (f"Surface\n{n}", f"Select surface {n}") for n in range(1, 10)},
+        "⌘⇧U": ("Unread", "Jump to the latest unread notification"),
+        "⌘⇧[": ("Prev\nsurface", "Previous surface"),
+        "⌘⇧]": ("Next\nsurface", "Next surface"),
+        "⌃⌘[": ("Prev\nWKSP", "Previous workspace"),
+        "⌃⌘]": ("Next\nWKSP", "Next workspace"),
+        "⌘⌥↑": ("Pane\n↑", "Focus the pane above"),
+        "⌘⌥↓": ("Pane\n↓", "Focus the pane below"),
+        "⌘⌥←": ("Pane\n←", "Focus the pane to the left"),
+        "⌘⌥→": ("Pane\n→", "Focus the pane to the right"),
+        "⌘T": ("New\nsurface", "New surface in this pane"),
+        "⌘D": ("Split\n→", "Split the pane right"),
+        "⌘⇧D": ("Split\n↓", "Split the pane down"),
+        "⌘⇧Enter": ("Zoom", "Toggle zoom on the focused pane"),
+        "⌘W": ("Close", "Close the surface"),
+        "⌘⇧P": ("Palette", "Open the command palette"),
+        "⌘P": ("Switch\nWKSP", "Open the workspace switcher"),
+    },
+}
+
+
+def describe_layers(layers, attrs):
+    for name, described in DESCRIBED_LAYERS.items():
+        tips = {}
+        for pos, key in enumerate(layers.get(name, [])):
+            chord = legend(key)
+            if chord in described:
+                label, description = described[chord]
+                layers[name][pos] = {"t": label, "type": "shortcut"}
+                tips[pos] = f"{description} · {chord}"
+            elif chord and isinstance(key, dict) and key.get("type") != "held":
+                print(f"{name}: no description for {chord!r}", file=sys.stderr)
+        attrs[name] = f' data-tips="{html.escape(json.dumps(tips))}"'
+
+
 HOLD_NAMES = {"cmd": "Cmd", "alt": "Alt", "ctrl": "Ctrl", "shift": "Shift"}
 
 
@@ -423,6 +460,7 @@ def main(out_path):
     for combo in parsed.get("combos", []):
         combo["k"] = clean(combo["k"])
     attrs = {}
+    describe_layers(parsed["layers"], attrs)
     notes = add_skhd_layers(parsed["layers"], base, attrs)
     page = render(parsed, variants[1:], cycles, notes, attrs)
     unmapped = sorted(set(re.findall(r">(&amp;[a-z][^<]*)<", page)))
