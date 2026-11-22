@@ -21,7 +21,7 @@ THUMBS = {
 
 
 HIDDEN_LAYERS = {"Enthium", "Engrammer", "Engram", "Dvorak", "ColemakDH", "Canary"}
-PINNED_LAYERS = {"QWERTY", "Cursor", "Number", "Function", "Symbol", "Magic", "CAD"}
+PINNED_LAYERS = {"QWERTY", "Cursor", "Number", "Function", "Symbol", "Magic", "CAD", "cmux"}
 
 FINGER_TAP =re.compile(r"&(?:left|right)_(?:pinky|ringy|middy|index)_tap(?= +[A-Z])")
 
@@ -130,6 +130,8 @@ def symbolize(key, keep_shifted, variant=0):
     cycle = label_cycle(key)
     if cycle:
         return {"t": cycle[variant % len(cycle)], "type": "shortcut"}
+    if "h" in key and tap in FUNCTION_LABELS:
+        key["t"] = tap = FUNCTION_LABELS[tap]
     if tap.startswith("⇧") and isinstance(shifted, str) and shifted.startswith("⇧"):
         key["t"], tap = shifted[1:], shifted[1:]
         del key["s"]
@@ -385,6 +387,15 @@ def add_skhd_layers(layers, base, attrs):
     return notes
 
 
+def activator(layers, pos, name):
+    targets = [
+        value
+        for keys in layers.values() if isinstance(keys[pos], dict)
+        for value in (keys[pos].get("h"), keys[pos].get("t")) if value in layers
+    ]
+    return name if name in targets else next(iter(targets), "")
+
+
 def main(out_path):
     with open(os.path.join(HERE, "..", "config", "glove80.keymap")) as f:
         source = FINGER_TAP.sub("&kp", f.read())
@@ -395,6 +406,10 @@ def main(out_path):
     visible = {
         n: [clean(k, names) for k in keys] for n, keys in parsed["layers"].items() if n in names
     }
+    for name, keys in visible.items():
+        for pos, key in enumerate(keys):
+            if isinstance(key, dict) and key.get("type") == "held" and not key.get("t"):
+                key["t"] = activator(visible, pos, name)
     cycles = {
         n: {pos: len(label_cycle(k)) for pos, k in enumerate(keys) if label_cycle(k)}
         for n, keys in visible.items()

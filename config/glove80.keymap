@@ -11564,6 +11564,7 @@ UNICODE_MORPH_MODS
         };
 
         layer_Cmux {
+            display-name = "cmux";
             bindings = <
             &none  &none  &none  &none  &none  &none  &none  &none  &none  &none
             &none  &kp LG(LA(N1))  &kp LG(LA(N2))  &kp LG(LA(N3))  &kp LG(LA(N4))  &kp LG(LA(N5))  &kp LG(LA(N6))  &kp LG(LA(N7))  &kp LG(LA(N8))  &kp LG(LA(N9))  &none  &none
