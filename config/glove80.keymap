@@ -11569,8 +11569,8 @@ UNICODE_MORPH_MODS
             &none  &none  &none  &none  &none  &none  &none  &none  &none  &none
             &none  &kp LG(LA(N1))  &kp LG(LA(N2))  &kp LG(LA(N3))  &kp LG(LA(N4))  &kp LG(LA(N5))  &kp LG(LA(N6))  &kp LG(LA(N7))  &kp LG(LA(N8))  &kp LG(LA(N9))  &none  &none
             &none  &kp LC(LG(LBKT))  &kp LG(LS(LBKT))  &kp LG(LA(UP))  &kp LG(LS(RBKT))  &kp LG(LS(U))  &none  &kp LG(LS(R))  &kp LG(R)  &kp LG(B)  &kp LG(LS(P))  &kp LG(W)
-            &none  &kp LC(LG(RBKT))  &kp LG(LA(LEFT))  &kp LG(LA(DOWN))  &kp LG(LA(RIGHT))  &kp LC(LG(U))  &kp LG(D)  &kp LG(LS(D))  &kp LG(LS(RET))  &kp LC(LG(EQUAL))  &kp LG(P)  &kp LG(LS(W))
-            &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &kp LG(N)  &kp LG(T)  &kp LG(LS(M))  &kp LG(F)  &none  &none
+            &none  &kp LC(LG(RBKT))  &kp LG(LA(LEFT))  &kp LG(LA(DOWN))  &kp LG(LA(RIGHT))  &kp LC(LG(U))  &kp LG(N)  &kp LG(P)  &kp LG(LS(RET))  &kp LG(D)  &kp LC(LG(EQUAL))  &kp LG(LS(W))
+            &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &none  &kp LG(T)  &kp LG(LS(M))  &kp LG(LS(D))  &kp LG(F)  &none
             &none  &none  &none  &none  &none  &none  &none  &none  &none  &trans  &none  &none  &none  &none  &none  &none
             >;
         };
